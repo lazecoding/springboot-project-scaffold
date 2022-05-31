@@ -1,0 +1,28 @@
+server:
+  port: 9977
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: springboot-project-scaffold
+  redis:
+    host: <IP>
+    port: 6379
+    password:
+    database: 0
+    lettuce:
+      pool:
+        max-active: 16
+        max-wait: 3000ms
+        max-idle: 16
+        min-idle: 0
+  # 数据库配置信息,数据库字符集 utf8mb4
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://<ip>:<port>/<DB_Name>?verifyServerCertificate=false&useSSL=false&allowMultiQueries=true
+    username: root
+    password: root
