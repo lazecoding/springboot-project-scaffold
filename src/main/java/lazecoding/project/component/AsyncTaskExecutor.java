@@ -28,7 +28,7 @@ public class AsyncTaskExecutor {
     private static final ThreadPoolExecutor ASYNC_EXECUTOR = new ThreadPoolExecutor(CORE_NUM, CORE_NUM * 2, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
             runnable -> {
                 Thread thread = new Thread(runnable);
-                thread.setName("executor-async-task");
+                thread.setName("异步任务执行器");
                 thread.setDaemon(true);
                 return thread;
             }, new ThreadPoolExecutor.CallerRunsPolicy());
@@ -36,7 +36,12 @@ public class AsyncTaskExecutor {
     /**
      * 延迟任务执行器
      */
-    private static final ScheduledExecutorService DELAY_EXECUTOR = new ScheduledThreadPoolExecutor(CORE_NUM);
+    private static final ScheduledExecutorService DELAY_EXECUTOR = new ScheduledThreadPoolExecutor(CORE_NUM, runnable -> {
+        Thread thread = new Thread(runnable);
+        thread.setName("延迟任务执行器");
+        thread.setDaemon(true);
+        return thread;
+    });
 
     /**
      * 提交异步任务
