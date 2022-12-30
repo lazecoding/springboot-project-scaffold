@@ -20,7 +20,7 @@ public class ListUtil {
      * @return List<List < T>>
      */
     public static <T> List<List<T>> partition(List<T> list, int size) {
-        if (CollectionUtils.isEmpty(list)) {
+        if (CollectionUtils.isEmpty(list) || size < 1) {
             return null;
         }
         List<List<T>> lists = new ArrayList<>();
