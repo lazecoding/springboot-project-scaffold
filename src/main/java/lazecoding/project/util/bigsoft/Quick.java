@@ -1,8 +1,8 @@
 package lazecoding.project.util.bigsoft;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 
 /**
  * 快排
@@ -10,7 +10,7 @@ import java.util.List;
  * @author lazecoding
  */
 public class Quick {
-    
+
     /**
      * quicksort the array; 默认正序。
      */
@@ -24,8 +24,6 @@ public class Quick {
     public static void sort(Comparable[] a, boolean reverse) {
         sort(a, 0, a.length - 1, reverse);
     }
-
-
 
     /**
      * quicksort the subarray from a[lo] to a[hi]
@@ -98,22 +96,20 @@ public class Quick {
         System.out.println();
     }
 
-
     public static void main(String[] args) {
         Integer[] arr = new Integer[]{6, 11, 88, 2, 99, 3, 10};
 
-        List<ComparableModel> ComparableModelList = new LinkedList<>();
-        ComparableModelList.add(new ComparableModel(6L, "6L"));
-        ComparableModelList.add(new ComparableModel(11L, "11L"));
-        ComparableModelList.add(new ComparableModel(88L, "88L"));
-        ComparableModelList.add(new ComparableModel(2L, "2L"));
-        ComparableModelList.add(new ComparableModel(99L, "99L"));
-        ComparableModelList.add(new ComparableModel(3L, "3L"));
-        ComparableModelList.add(new ComparableModel(10L, "10L"));
-        Object obj = ComparableModelList.toArray();
-        System.out.println(obj);
+        // 可以通过 DynamicArray 容纳大量数据，然后排序
+        DynamicArray<ComparableModel> dynamicArray = new DynamicArray<>();
+        dynamicArray.insert(0, new ComparableModel(6L, "6L"));
+        dynamicArray.insert(1, new ComparableModel(11L, "11L"));
+        dynamicArray.insert(2, new ComparableModel(88L, "88L"));
+        dynamicArray.insert(3, new ComparableModel(2L, "2L"));
+        dynamicArray.insert(4, new ComparableModel(99L, "99L"));
+        dynamicArray.insert(5, new ComparableModel(3L, "3L"));
+        dynamicArray.insert(6, new ComparableModel(10L, "10L"));
         ComparableModel[] ComparableModels = new ComparableModel[1];
-        ComparableModels = ComparableModelList.toArray(ComparableModels);
+        ComparableModels = dynamicArray.getStaticArray(ComparableModels);
 
         // 倒序
         sort(ComparableModels, true);
