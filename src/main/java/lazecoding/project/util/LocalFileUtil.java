@@ -6,6 +6,7 @@ import org.apache.commons.io.LineIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -15,7 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LocalFileUtil
@@ -26,15 +29,63 @@ public class LocalFileUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalFileUtil.class);
 
-    public static void lineIterator(String path, int batch, LocalFileUtil.LineProcessor lineProcessor) {
+    /**
+     * 如果不存在就创建文件
+     *
+     * @param path
+     * @return
+     */
+    public static boolean createIfNil(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            try {
+                boolean isDir = path.endsWith("/") || path.endsWith("\\");
+                if (isDir) {
+                    return file.mkdirs();
+                } else {
+                    return file.createNewFile();
+                }
+            } catch (IOException e) {
+                logger.error("createDirIfNil 异常", e);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 列出目录下一层所有文件
+     */
+    public static List<File> list(String path) {
+        File dir = new File(path);
+        // 列出所有文件（不递归）
+        return (List<File>) FileUtils.listFiles(dir, null, false);
+    }
+
+    /**
+     * 列出目录下一层所有文件夹
+     */
+    public static List<File> listDirs(String path) {
+        File dir = new File(path);
+        if (!dir.exists()) {
+            return null;
+        }
+        // 列出所有文件（不递归）
+        File[] files = dir.listFiles();
+        if (ObjectUtils.isEmpty(files) || files.length == 0) {
+            return null;
+        }
+        return Arrays.stream(files).filter(File::isDirectory).collect(Collectors.toList());
+    }
+
+    public static void lineIterator(String path, int batch, LineProcessor lineProcessor) {
         lineIterator(new File(path), batch, lineProcessor);
     }
 
     /**
      * 按行读取
      */
-    public static void lineIterator(File file, int batch, LocalFileUtil.LineProcessor lineProcessor) {
-        new ArrayList(1);
+    public static void lineIterator(File file, int batch, LineProcessor lineProcessor) {
         LineIterator lineIterator = null;
 
         try {
@@ -56,12 +107,12 @@ public class LocalFileUtil {
     /**
      * 按行读取
      */
-    public static void lineIterator(InputStream inputStream, int batch, LocalFileUtil.LineProcessor lineProcessor) {
+    public static void lineIterator(InputStream inputStream, int batch, LineProcessor lineProcessor) {
         LineIterator lineIterator = IOUtils.lineIterator(inputStream, "utf-8");
         iterator(lineIterator, batch, lineProcessor);
     }
 
-    private static void iterator(LineIterator lineIterator, int batch, LocalFileUtil.LineProcessor lineProcessor) {
+    private static void iterator(LineIterator lineIterator, int batch, LineProcessor lineProcessor) {
         ArrayList list = new ArrayList(1);
         while (lineIterator.hasNext()) {
             String lineContent = lineIterator.next();
@@ -84,6 +135,28 @@ public class LocalFileUtil {
      */
     public interface LineProcessor {
         void readLines(List<String> list);
+    }
+
+    /**
+     * 递归删除
+     */
+    public static boolean forceDelete(String path) {
+        boolean isSuccess = false;
+        try {
+            FileUtils.forceDelete(new File(path));
+            isSuccess = true;
+        } catch (FileNotFoundException e) {
+            isSuccess = true;
+            System.err.format("%s: no such" + " file or directory%n", path);
+        } catch (NoSuchFileException x) {
+            isSuccess = true;
+            System.err.format("%s: no such" + " file or directory%n", path);
+        } catch (IOException x) {
+            // File permission problems are caught here.
+            System.err.println(x);
+            isSuccess = false;
+        }
+        return isSuccess;
     }
 
     /**
