@@ -111,7 +111,7 @@ public class FreeTimeCalculator {
     /**
      * 合并连续的时间段
      */
-    public static List<FreeTimeSlot> mergeContinuousTimeSlots(List<FreeTimeSlot> timeSlots) {
+    public static List<FreeTimeSlot> mergeFreeTimeSlots(List<FreeTimeSlot> timeSlots) {
         List<FreeTimeSlot> mergedSlots = new ArrayList<>();
         if (CollectionUtils.isEmpty(timeSlots)) {
             return mergedSlots;
@@ -130,5 +130,29 @@ public class FreeTimeCalculator {
         mergedSlots.add(currentSlot);
         return mergedSlots;
     }
+
+    /**
+     * 合并连续的时间段
+     */
+    public static List<TimeBlock> mergeTimeBlocks(List<TimeBlock> timeBlocks) {
+        List<TimeBlock> mergedBlocks = new ArrayList<>();
+        if (CollectionUtils.isEmpty(timeBlocks)) {
+            return mergedBlocks;
+        }
+        timeBlocks.sort((s1, s2) -> s1.start.compareTo(s2.start));
+        TimeBlock currentBlock = timeBlocks.get(0);
+        for (int i = 1; i < timeBlocks.size(); i++) {
+            TimeBlock nextBlock = timeBlocks.get(i);
+            if (currentBlock.end.isAfter(nextBlock.start) || currentBlock.end.isEqual(nextBlock.start)) {
+                currentBlock = new TimeBlock(currentBlock.start, nextBlock.end);
+            } else {
+                mergedBlocks.add(currentBlock);
+                currentBlock = nextBlock;
+            }
+        }
+        mergedBlocks.add(currentBlock);
+        return mergedBlocks;
+    }
+
 
 }

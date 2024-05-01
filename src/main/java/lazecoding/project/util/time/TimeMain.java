@@ -99,7 +99,7 @@ public class TimeMain {
 
         List<FreeTimeSlot> freeTimeSlot_result = FreeTimeCalculator.getIntersection(freeTimeSlot_1, freeTimeSlot_2);
         System.out.println("空闲时间交集 freeTimeSlot_result:" + freeTimeSlot_result);
-        List<FreeTimeSlot> freeTimeSlot_merge = FreeTimeCalculator.mergeContinuousTimeSlots(freeTimeSlot_result);
+        List<FreeTimeSlot> freeTimeSlot_merge = FreeTimeCalculator.mergeFreeTimeSlots(freeTimeSlot_result);
         System.out.println("空闲时间交集 合并 freeTimeSlot_merge:" + freeTimeSlot_merge);
 
         System.out.println("=================");
@@ -124,7 +124,7 @@ public class TimeMain {
         freeTimeSlot_merge_1.add(new FreeTimeSlot(LocalDateTime.of(year, month, dayOfMonth, 4, 0), LocalDateTime.of(year, month, dayOfMonth, 6, 0)));
         freeTimeSlot_merge_1.add(new FreeTimeSlot(LocalDateTime.of(year, month, dayOfMonth, 7, 0), LocalDateTime.of(year, month, dayOfMonth, 8, 0)));
         freeTimeSlot_merge_1.add(new FreeTimeSlot(LocalDateTime.of(year, month, dayOfMonth, 8, 0), LocalDateTime.of(year, month, dayOfMonth, 9, 0)));
-        List<FreeTimeSlot> freeTimeSlot_merge_2 = FreeTimeCalculator.mergeContinuousTimeSlots(freeTimeSlot_merge_1);
+        List<FreeTimeSlot> freeTimeSlot_merge_2 = FreeTimeCalculator.mergeFreeTimeSlots(freeTimeSlot_merge_1);
         System.out.println("空闲时间交集 合并 freeTimeSlot_merge_2:" + freeTimeSlot_merge_2);
 
 

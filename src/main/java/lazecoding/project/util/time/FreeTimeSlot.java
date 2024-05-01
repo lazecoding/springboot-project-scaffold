@@ -1,30 +1,26 @@
 package lazecoding.project.util.time;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * 空闲时间
  *
  * @author lazecoding
  */
-public class FreeTimeSlot {
+public class FreeTimeSlot extends TimeBlock {
 
-    /**
-     * 开始时间
-     */
-    LocalDateTime start;
-
-    /**
-     * 结束时间
-     */
-    LocalDateTime end;
 
     public FreeTimeSlot() {
+        super();
     }
 
     public FreeTimeSlot(LocalDateTime start, LocalDateTime end) {
-        this.start = start;
-        this.end = end;
+        super(start, end);
+    }
+
+    public FreeTimeSlot(Date startDate, Date endDate) {
+        super(startDate, endDate);
     }
 
     /**

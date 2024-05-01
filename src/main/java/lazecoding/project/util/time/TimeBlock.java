@@ -19,6 +19,9 @@ public class TimeBlock {
      */
     LocalDateTime end;
 
+    public TimeBlock() {
+    }
+
     public TimeBlock(LocalDateTime start, LocalDateTime end) {
         this.start = start;
         this.end = end;
