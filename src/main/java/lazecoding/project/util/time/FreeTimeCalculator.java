@@ -10,8 +10,8 @@ import java.util.List;
 
 
 /**
- * 在可重叠时间块下计算空闲时间
- * 十三点
+ * 在可重叠时间块下计算空闲时间、时间交集、合并时间
+ *
  * @author lazecoding
  */
 public class FreeTimeCalculator {
