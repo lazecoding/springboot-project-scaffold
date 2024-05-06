@@ -28,7 +28,7 @@ public class DateConvertor {
      * 获取  Instant
      */
     public static Instant toInstant(long timestamp) {
-       return Instant.ofEpochMilli(timestamp);
+        return Instant.ofEpochMilli(timestamp);
     }
 
     /**
@@ -42,7 +42,7 @@ public class DateConvertor {
      * 根据 Instant 获取 LocalDateTime
      */
     public static LocalDateTime ofInstant(Instant instant) {
-        return LocalDateTime.ofInstant(instant,DEFAULT_ZONE);
+        return LocalDateTime.ofInstant(instant, DEFAULT_ZONE);
     }
 
 
@@ -126,15 +126,15 @@ public class DateConvertor {
 
 
     public static void print(Instant instant) {
-        System.out.println( "DateConvertor#print " + DateConvertor.toDate(instant).toInstant());
+        System.out.println("DateConvertor#print " + DateConvertor.toDate(instant).toInstant());
     }
 
     public static void print(LocalDateTime localDateTime) {
-        System.out.println( "DateConvertor#print " + DateConvertor.toDate(localDateTime).toInstant());
+        System.out.println("DateConvertor#print " + DateConvertor.toDate(localDateTime).toInstant());
     }
 
     public static void print(long timestamp) {
-        System.out.println( "DateConvertor#print " + DateConvertor.toDate(timestamp).toInstant());
+        System.out.println("DateConvertor#print " + DateConvertor.toDate(timestamp).toInstant());
     }
 
 }
