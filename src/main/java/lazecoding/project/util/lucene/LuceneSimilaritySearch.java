@@ -9,6 +9,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -19,7 +20,6 @@ import org.apache.lucene.store.Directory;
 
 import java.io.IOException;
 
-
 /**
  * 相似度检索
  *
@@ -28,15 +28,10 @@ import java.io.IOException;
 public class LuceneSimilaritySearch {
 
     public static void main(String[] args) {
-        IndexWriter writer = null;
-        try {
-            // 创建内存型索引
-            Directory index = new ByteBuffersDirectory();
+        // 创建内存型索引
+        Directory index = new ByteBuffersDirectory();
 
-            // 创建IndexWriter
-            IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
-            writer = new IndexWriter(index, config);
-
+        try (IndexWriter writer = new IndexWriter(index, new IndexWriterConfig(new StandardAnalyzer()))) {
             // 添加文档到索引
             Document doc = new Document();
             // 仅存储
@@ -44,36 +39,27 @@ public class LuceneSimilaritySearch {
             // 检索 + 存储
             doc.add(new TextField("content", "Lucene", Field.Store.YES));
             writer.addDocument(doc);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
 
-            // 提交写入
-            writer.close();
-
+        try {
             // 构建查询
             QueryParser parser = new QueryParser("content", new StandardAnalyzer());
             Query query = parser.parse("Lucene Java.");
 
             // 执行查询
-            IndexReader indexReader = DirectoryReader.open(index);
-            IndexSearcher searcher = new IndexSearcher(indexReader);
-            TopDocs results = searcher.search(query, 10);
+            try (IndexReader indexReader = DirectoryReader.open(index)) {
+                IndexSearcher searcher = new IndexSearcher(indexReader);
+                TopDocs results = searcher.search(query, 10);
 
-            // 输出查询结果
-            for (ScoreDoc scoreDoc : results.scoreDocs) {
-                System.out.println("Score: " + scoreDoc.score + ", Document: " + searcher.doc(scoreDoc.doc));
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException e) {
-                    System.err.println(e.getMessage());
+                // 输出查询结果
+                for (ScoreDoc scoreDoc : results.scoreDocs) {
+                    System.out.println("Score: " + scoreDoc.score + ", Document: " + searcher.doc(scoreDoc.doc));
                 }
             }
+        } catch (IOException | ParseException e) {
+            System.err.println(e.getMessage());
         }
-
-
     }
-
 }
