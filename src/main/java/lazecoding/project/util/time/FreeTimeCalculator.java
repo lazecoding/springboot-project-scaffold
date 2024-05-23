@@ -28,18 +28,17 @@ public class FreeTimeCalculator {
             return freeTimes;
         }
         // 将日程按照开始时间排序
-        timeBlocks.sort((s1, s2) -> s1.start.compareTo(s2.start));
+        timeBlocks.sort((s1, s2) -> s1.getStart().compareTo(s2.getStart()));
         LocalDateTime currentTime = LocalDateTime.of(startTime.getYear(), startTime.getMonthValue(), startTime.getDayOfMonth(), startTime.getHour(), startTime.getMinute()); // 初始时间设为最早可能的时间
         for (TimeBlock block : timeBlocks) {
             // 如果当前日程的开始时间大于当前时间，说明这段时间是空闲的
-            if (block.start.isAfter(currentTime)) {
-                freeTimes.add(new FreeTimeSlot(currentTime, block.start));
+            if (block.getStart().isAfter(currentTime)) {
+                freeTimes.add(new FreeTimeSlot(currentTime, block.getStart()));
             }
             // 更新当前时间为当前日程的结束时间
-            // 原方法 currentTime = block.end;
-            // 新方法，比较时间获取当前时间和时间段，哪个晚用哪个
-            if (block.end.isAfter(currentTime)) {
-                currentTime = block.end;
+            // 比较时间获取当前时间和时间段，哪个晚用哪个
+            if (block.getEnd().isAfter(currentTime)) {
+                currentTime = block.getEnd();
             }
         }
         // 检查并添加最后的空闲时间（如果有的话）
@@ -88,12 +87,12 @@ public class FreeTimeCalculator {
         if (CollectionUtils.isEmpty(timeSlots)) {
             return mergedSlots;
         }
-        timeSlots.sort((s1, s2) -> s1.start.compareTo(s2.start));
+        timeSlots.sort((s1, s2) -> s1.getStart().compareTo(s2.getStart()));
         FreeTimeSlot currentSlot = timeSlots.get(0);
         for (int i = 1; i < timeSlots.size(); i++) {
             FreeTimeSlot nextSlot = timeSlots.get(i);
-            if (currentSlot.end.isAfter(nextSlot.start) || currentSlot.end.isEqual(nextSlot.start)) {
-                currentSlot = new FreeTimeSlot(currentSlot.start, nextSlot.end);
+            if (currentSlot.getEnd().isAfter(nextSlot.getStart()) || currentSlot.getEnd().isEqual(nextSlot.getStart())) {
+                currentSlot = new FreeTimeSlot(currentSlot.getStart(), nextSlot.getEnd());
             } else {
                 mergedSlots.add(currentSlot);
                 currentSlot = nextSlot;
@@ -111,12 +110,12 @@ public class FreeTimeCalculator {
         if (CollectionUtils.isEmpty(timeBlocks)) {
             return mergedBlocks;
         }
-        timeBlocks.sort((s1, s2) -> s1.start.compareTo(s2.start));
+        timeBlocks.sort((s1, s2) -> s1.getStart().compareTo(s2.getStart()));
         TimeBlock currentBlock = timeBlocks.get(0);
         for (int i = 1; i < timeBlocks.size(); i++) {
             TimeBlock nextBlock = timeBlocks.get(i);
-            if (currentBlock.end.isAfter(nextBlock.start) || currentBlock.end.isEqual(nextBlock.start)) {
-                currentBlock = new TimeBlock(currentBlock.start, nextBlock.end);
+            if (currentBlock.getEnd().isAfter(nextBlock.getStart()) || currentBlock.getEnd().isEqual(nextBlock.getStart())) {
+                currentBlock = new TimeBlock(currentBlock.getStart(), nextBlock.getEnd());
             } else {
                 mergedBlocks.add(currentBlock);
                 currentBlock = nextBlock;

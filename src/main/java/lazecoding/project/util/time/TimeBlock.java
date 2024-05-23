@@ -12,12 +12,12 @@ public class TimeBlock {
     /**
      * 开始时间
      */
-    LocalDateTime start;
+    private LocalDateTime start;
 
     /**
      * 结束时间
      */
-    LocalDateTime end;
+    private LocalDateTime end;
 
     public TimeBlock() {
     }
@@ -30,6 +30,22 @@ public class TimeBlock {
     public TimeBlock(Date startDate, Date endDate) {
         this.start = LocalDateTime.ofInstant(startDate.toInstant(), ZoneId.of("Asia/Shanghai"));
         this.end = LocalDateTime.ofInstant(endDate.toInstant(), ZoneId.of("Asia/Shanghai"));
+    }
+
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
+
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
     }
 
     @Override

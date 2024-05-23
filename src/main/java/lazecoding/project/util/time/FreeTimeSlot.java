@@ -27,23 +27,23 @@ public class FreeTimeSlot extends TimeBlock {
      * 是否冲突，有交集
      */
     public boolean hasIntersection(FreeTimeSlot other) {
-        return this.start.isBefore(other.end) && other.start.isBefore(this.end);
+        return this.getStart().isBefore(other.getEnd()) && other.getStart().isBefore(this.getEnd());
     }
 
     /**
      * 获取交集时间块
      */
     public FreeTimeSlot intersection(FreeTimeSlot other) {
-        LocalDateTime intersectionStart = this.start.isAfter(other.start) ? this.start : other.start;
-        LocalDateTime intersectionEnd = this.end.isBefore(other.end) ? this.end : other.end;
+        LocalDateTime intersectionStart = this.getStart().isAfter(other.getStart()) ? this.getStart() : other.getStart();
+        LocalDateTime intersectionEnd = this.getEnd().isBefore(other.getEnd()) ? this.getEnd() : other.getEnd();
         return new FreeTimeSlot(intersectionStart, intersectionEnd);
     }
 
     @Override
     public String toString() {
         return "FreeTimeSlot{" +
-                "start=" + start +
-                ", end=" + end +
+                "start=" + this.getStart() +
+                ", end=" + this.getEnd() +
                 '}';
     }
 }
