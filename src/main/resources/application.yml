@@ -10,7 +10,8 @@ spring:
   application:
     name: springboot-project-scaffold
   redis:
-    host: <IP>
+    # redisTemplate
+    host: 127.0.0.1
     port: 6379
     password:
     database: 0
@@ -20,10 +21,27 @@ spring:
         max-wait: 3000ms
         max-idle: 16
         min-idle: 0
+  # redisson
+  redisson:
+    enableCluster: false
+    password:
+    connectionTimeout: 29999
+    cluster:
+      nodeAddresses: [
+        "redis://127.0.0.1:7005",
+        "redis://127.0.0.1:7004",
+        "redis://127.0.0.1:7003",
+        "redis://127.0.0.1:7002",
+        "redis://127.0.0.1:7001",
+        "redis://127.0.0.1:7000"
+      ]
+    single:
+      address: "redis://127.0.0.1:6379"
+      database: 0
   # 数据库配置信息,数据库字符集 utf8mb4
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://<ip>:<port>/<DB_Name>?verifyServerCertificate=false&useSSL=false&allowMultiQueries=true
+    url: jdbc:mysql://127.0.0.1:3306/scaffold?verifyServerCertificate=false&useSSL=false&allowMultiQueries=true
     username: root
     password: root
 
