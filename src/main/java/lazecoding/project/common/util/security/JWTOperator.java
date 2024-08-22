@@ -39,6 +39,27 @@ public class JWTOperator {
      */
     public static final byte[] SECRET_BYTE = SECRET.getBytes();
 
+    /**
+     * 最大有效时长，单位 秒
+     */
+    public static int MAX_AGE_DAY = 7;
+
+    /**
+     * 最大有效时长，单位 秒
+     */
+    public static int MAX_AGE_SECOND = 7* 24 * 60 * 60;
+
+    /**
+     * 最大有效时长，单位 毫秒
+     */
+    public static long MAX_AGE_MILLISECOND = 7* 24 * 60 * 60 * 60;
+
+    /**
+     * 用户 token 名称
+     */
+    public static String TOKEN_NAME = "access-token";
+
+
 
     /**
      * 创建用户 token
@@ -148,9 +169,9 @@ public class JWTOperator {
         if (ObjectUtils.isEmpty(request)) {
             return null;
         }
-        String accessToken = getCookieValue(request, "access-token");
+        String accessToken = getCookieValue(request, TOKEN_NAME);
         if (!StringUtils.hasText(accessToken)) {
-            accessToken = request.getHeader("access-token");
+            accessToken = request.getHeader(TOKEN_NAME);
         }
         return accessToken;
     }
@@ -175,6 +196,40 @@ public class JWTOperator {
         }
         return null;
     }
+
+    /**
+     * TODO 删除 token，主动失效
+     *
+     * @param accessToken 用户 token
+     */
+
+    public static boolean dropAccessToken(String accessToken) {
+
+        return true;
+    }
+
+    /**
+     * 获取登录 Cookie
+     *
+     * @param accessToken 用户 token
+     */
+    public static Cookie getLoginCookie(String accessToken) {
+        Cookie cookie = new Cookie(TOKEN_NAME, accessToken);
+        cookie.setPath("/");
+        cookie.setMaxAge(JWTOperator.MAX_AGE_SECOND);
+        return cookie;
+    }
+
+    /**
+     * 获取登出 Cookie
+     **/
+    public static Cookie getLogoutCookie() {
+        Cookie cookie = new Cookie(TOKEN_NAME, null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        return cookie;
+    }
+
 
 
     public static void main(String[] args) {
