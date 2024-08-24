@@ -98,13 +98,14 @@ public class JWTOperator {
      * 校验 token
      */
     public static boolean verify(String token) {
-        boolean pass = false;
+        boolean pass;
         try {
             pass = JWTUtil.verify(token, SECRET_BYTE);
             if (pass) {
                 JWTValidator.of(token).validateDate();
             }
         } catch (Exception e) {
+            pass = false;
             logger.error("jwt token verify exception", e);
         }
         return pass;
