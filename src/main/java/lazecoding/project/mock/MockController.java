@@ -15,17 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * MockController
@@ -212,6 +205,24 @@ public class MockController {
         }
         resultBean.setSuccess(isSuccess);
         resultBean.setMessage(message);
+        return resultBean;
+    }
+
+    @PostMapping(value = "xss")
+    @ResponseBody
+    public ResultBean xss(String modelId, String modelJson) {
+        ResultBean resultBean = ResultBean.getInstance();
+        logger.debug("xss params modelId:[{}]  modelJson:[{}]", modelId, modelJson);
+        resultBean.setMessage("xss");
+        resultBean.addData("modelId", modelId);
+        resultBean.addData("modelJson", modelJson);
+        resultBean.addData("modelJsonObj", JsonUtil.GSON.fromJson(modelJson, Map.class));
+        Map<String, Object> map = new HashMap<>();
+        map.put("str", "string");
+        map.put("date", new Date());
+        map.put("int", 1);
+        String defaultModelJson = JsonUtil.GSON.toJson(map);
+        resultBean.addData("defaultModelJson", defaultModelJson);
         return resultBean;
     }
 
