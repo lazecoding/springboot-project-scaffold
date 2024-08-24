@@ -48,7 +48,7 @@ spring:
   # 数据库配置信息,数据库字符集 utf8mb4
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/scaffold?verifyServerCertificate=false&useSSL=false&allowMultiQueries=true&?allowPublicKeyRetrieval=true
+    url: jdbc:mysql://127.0.0.1:3306/scaffold?verifyServerCertificate=false&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
     username: root
     password: root
   jpa:
