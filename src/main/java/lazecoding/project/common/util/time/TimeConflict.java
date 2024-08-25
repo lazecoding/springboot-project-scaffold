@@ -3,7 +3,7 @@ package lazecoding.project.common.util.time;
 /**
  * 时间冲突
  *
- * @author lazy
+ * @author lazecoding
  */
 public class TimeConflict {
 
