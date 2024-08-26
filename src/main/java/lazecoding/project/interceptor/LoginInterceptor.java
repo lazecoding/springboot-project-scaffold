@@ -1,7 +1,10 @@
 package lazecoding.project.interceptor;
 
-import lazecoding.project.common.util.security.JWTOperator;
-import org.springframework.util.StringUtils;
+import lazecoding.project.common.model.user.CurrentUser;
+import lazecoding.project.common.util.BeanUtil;
+import lazecoding.project.service.user.LoginService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,26 +17,21 @@ import org.springframework.web.servlet.ModelAndView;
  */
 public class LoginInterceptor implements HandlerInterceptor {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginInterceptor.class);
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 获取用户 token
-        String accessToken = JWTOperator.getAccessToken(request);
-        if (!StringUtils.hasText(accessToken)) {
-            // TODO 用户未登录，重定向到登录页面
+        LoginService loginService = BeanUtil.getBean(LoginService.class);
+        CurrentUser currentUser = null;
+        try {
+            currentUser = loginService.currentUser();
+        } catch (Exception e) {
+            logger.error("loginService.currentUser Exception", e);
+        }
+        if (currentUser == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return false;
         }
-        boolean verify = JWTOperator.verify(accessToken);
-        if (!verify) {
-            // TODO 用户 token 非法，重定向到登录页面
-            response.sendRedirect(request.getContextPath() + "/login");
-            return false;
-        }
-        // TODO 检查 token 是否被注销
-
-        // TODO 通过 token 获取用户
-
-
         return true;
     }
 

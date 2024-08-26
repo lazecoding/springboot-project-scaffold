@@ -101,6 +101,10 @@ public class LoginService {
         if (!StringUtils.hasText(uid)) {
             return null;
         }
+        boolean exists  = CacheOperator.exists(CacheConstants.ACCESS_TOKEN.getCacheKey(accessToken));
+        if (!exists) {
+            return null;
+        }
         User user = userService.findByUid(uid);
         if (user == null) {
             throw new BusException("用户信息异常，请联系管理员");
