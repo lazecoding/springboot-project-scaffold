@@ -40,17 +40,17 @@ public class JWTOperator {
     public static final byte[] SECRET_BYTE = SECRET.getBytes();
 
     /**
-     * 最大有效时长，单位 秒
+     * 最大有效时长 7 天，单位 秒
      */
     public static int MAX_AGE_DAY = 7;
 
     /**
-     * 最大有效时长，单位 秒
+     * 最大有效时长 7 天，单位 秒
      */
     public static int MAX_AGE_SECOND = 7* 24 * 60 * 60;
 
     /**
-     * 最大有效时长，单位 毫秒
+     * 最大有效时长 7 天，单位 毫秒
      */
     public static long MAX_AGE_MILLISECOND = 7* 24 * 60 * 60 * 60;
 
@@ -196,17 +196,6 @@ public class JWTOperator {
             }
         }
         return null;
-    }
-
-    /**
-     * TODO 删除 token，主动失效
-     *
-     * @param accessToken 用户 token
-     */
-
-    public static boolean dropAccessToken(String accessToken) {
-
-        return true;
     }
 
     /**
