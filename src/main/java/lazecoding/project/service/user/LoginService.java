@@ -108,7 +108,7 @@ public class LoginService {
         CurrentUser currentUser = new CurrentUser();
         currentUser.setUid(uid);
         currentUser.setUname(user.getUname());
-        // TODO 赋予角色
+        currentUser.setRoles(user.getRoleSet());
         currentUser.setAccessToken(accessToken);
         return currentUser;
     }
