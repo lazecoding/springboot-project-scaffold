@@ -1,0 +1,67 @@
+# 本地环境
+server:
+  port: 9977
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: springboot-project-scaffold
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  redis:
+    # redisTemplate
+    host: 127.0.0.1
+    port: 6379
+    # cluster:
+    #  nodes: 127.0.0.1:7000,127.0.0.1:7001,127.0.0.1:7002
+    #  max-redirects: 3
+    password:
+    database: 0
+    lettuce:
+      pool:
+        max-active: 16
+        max-wait: 3000ms
+        max-idle: 16
+        min-idle: 0
+  # redisson
+  redisson:
+    enableCluster: false
+    password:
+    connectionTimeout: 29999
+    cluster:
+      nodeAddresses: [
+        "redis://127.0.0.1:7005",
+        "redis://127.0.0.1:7004",
+        "redis://127.0.0.1:7003",
+        "redis://127.0.0.1:7002",
+        "redis://127.0.0.1:7001",
+        "redis://127.0.0.1:7000"
+      ]
+    single:
+      address: "redis://127.0.0.1:6379"
+      database: 0
+  # 数据库配置信息,数据库字符集 utf8mb4
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/scaffold?verifyServerCertificate=false&useSSL=false&allowMultiQueries=true&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+  jpa:
+    database: MySQL
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+amqp:
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
