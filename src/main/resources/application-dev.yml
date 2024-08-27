@@ -58,6 +58,13 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+# 文件中心 minio
+minio:
+  # 地址
+  endpoint: http://127.0.0.1:9000
+  accessKey: IzU1KrAcL0usKbiUffor
+  secretKey: IVRPAyM3wcXUqKOPJ4q9TcNQOZ12s1O5ku2WAE7f
+  bucket: scaffold
 amqp:
   rabbitmq:
     host: 127.0.0.1

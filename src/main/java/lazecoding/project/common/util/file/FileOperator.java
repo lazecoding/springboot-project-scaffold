@@ -84,5 +84,11 @@ public interface FileOperator {
      */
     File getFile(String path);
 
+    /**
+     * 获取相对预览地址
+     *
+     * @param path 文件地址
+     */
+    String getPreviewPath(String path);
 
 }

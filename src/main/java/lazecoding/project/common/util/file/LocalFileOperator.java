@@ -125,6 +125,16 @@ public class LocalFileOperator implements FileOperator {
         return new File(path);
     }
 
+    /**
+     * 获取相对预览地址
+     *
+     * @param path 文件地址
+     */
+    @Override
+    public String getPreviewPath(String path) {
+        return path;
+    }
+
 
 }
 
