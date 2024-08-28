@@ -27,6 +27,7 @@
         <minio.version>8.5.7</minio.version>
         <!-- 配合 minio 提升版本 -->
         <okhttp3.version>4.12.0</okhttp3.version>
+        <springdoc.version>1.8.0</springdoc.version>
     </properties>
     <dependencies>
         <dependency>
@@ -177,6 +178,14 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>${minio.version}</version>
+        </dependency>
+
+        <!-- swagger-ui 依赖 https://springdoc.org/ -->
+        <!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.version}</version>
         </dependency>
     </dependencies>
 

@@ -1,5 +1,6 @@
 package lazecoding.project.common.mvc;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.Map;
  *
  * @author lazecoding
  */
+@Schema(description = "通用返回对象")
 public class ResultBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,26 +20,31 @@ public class ResultBean implements Serializable {
     /**
      * 附加信息
      */
+    @Schema(description = "附加信息", example = "成功")
     private String message = "";
 
     /**
      * 状态码
      */
+    @Schema(description = "状态码", example = "200")
     private String code = "200";
 
     /**
      * 是否成功
      */
+    @Schema(description = "成功状态", example = "true")
     private boolean isSuccess = true;
 
     /**
      * 数据集合
      */
+    @Schema(description = "数据集")
     private Map<String, Object> data = new HashMap(4);
 
     /**
      * 数据
      */
+    @Schema(description = "数据")
     private Object value;
 
     public static ResultBean getInstance() {

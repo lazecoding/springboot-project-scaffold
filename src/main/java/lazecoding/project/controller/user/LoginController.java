@@ -1,5 +1,10 @@
 package lazecoding.project.controller.user;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lazecoding.project.common.exception.BusException;
 import lazecoding.project.common.model.user.CurrentUser;
 import lazecoding.project.common.model.user.LoginParam;
@@ -9,6 +14,7 @@ import lazecoding.project.common.util.security.JWTOperator;
 import lazecoding.project.service.user.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author lazecoding
  */
+@Tag(name = "登录", description = "用户登入登出")
 @RestController
 @RequestMapping("sys")
 public class LoginController {
@@ -31,9 +38,14 @@ public class LoginController {
     /**
      * 用户登录 http://localhost:9977/sys/login?uname=root&pwd=pwd
      */
+    @Operation(summary = "登陆", description = "用户登录")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
     @PostMapping(value = "login")
     @ResponseBody
-    public ResultBean login(LoginParam loginParam, HttpServletResponse httpServletResponse) {
+    public ResultBean login(@ParameterObject LoginParam loginParam, HttpServletResponse httpServletResponse) {
         ResultBean resultBean = ResultBean.getInstance();
         String message = "";
         boolean isSuccess = false;
@@ -58,6 +70,7 @@ public class LoginController {
     /**
      * 用户登出 http://localhost:9977/sys/logout
      */
+    @Operation(summary = "登出", description = "用户登出")
     @PostMapping(value = "logout")
     @ResponseBody
     public ResultBean logout(HttpServletResponse httpServletResponse) {
@@ -84,6 +97,7 @@ public class LoginController {
     /**
      * 获取当前用户 http://localhost:9977/sys/current
      */
+    @Operation(summary = "获取当前用户", description = "获取当前用户")
     @GetMapping(value = "current")
     @ResponseBody
     public ResultBean current() {
@@ -105,7 +119,6 @@ public class LoginController {
         resultBean.setMessage(message);
         return resultBean;
     }
-
 
 
 }
