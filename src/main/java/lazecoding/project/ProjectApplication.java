@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  *
  * @author lazecoding
  */
+@EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
 public class ProjectApplication {
