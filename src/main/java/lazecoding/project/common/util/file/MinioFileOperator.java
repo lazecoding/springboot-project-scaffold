@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -147,8 +148,40 @@ public class MinioFileOperator implements FileOperator {
      */
     @Override
     public boolean rename(String path, String newName) {
-        // 禁止修改文件名称
-        return false;
+        path = substringPath(path);
+        if (!this.bucketExists()) {
+            return false;
+        }
+        Path pathObj = Path.of(path);
+        pathObj = pathObj.resolveSibling(newName);
+        String destPath = pathObj.toString();
+        // 需要先把 path copy to destPath，再删除 path
+        boolean isCopy = false;
+        try {
+            ObjectWriteResponse objectWriteResponse = minioClient.copyObject(
+                    CopyObjectArgs.builder()
+                            .bucket(minioConfig.getBucket()).object(destPath)
+                            .source(CopySource.builder().bucket(minioConfig.getBucket()).object(path).build())
+                            .build()
+            );
+            logger.debug("path:[{}] destPath:[{}] objectWriteResponse:[{}]",
+                    path, destPath, objectWriteResponse.toString());
+            isCopy = true;
+        } catch (Exception e) {
+            logger.error("copyObject Exception", e);
+        }
+        boolean isDelete = false;
+        if (isCopy) {
+            try {
+                minioClient.removeObject(
+                        RemoveObjectArgs.builder().bucket(minioConfig.getBucket()).object(path).build()
+                );
+                isDelete = true;
+            } catch (Exception e) {
+                logger.error("removeObject Exception", e);
+            }
+        }
+        return isCopy && isDelete;
     }
 
     /**
