@@ -51,6 +51,14 @@ public class ResultBean implements Serializable {
         return new ResultBean();
     }
 
+    public ResultBean() {
+    }
+
+    public ResultBean(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     public String getMessage() {
         return message;
     }
