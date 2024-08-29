@@ -29,7 +29,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             logger.error("loginService.currentUser Exception", e);
         }
         if (currentUser == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
         return true;
