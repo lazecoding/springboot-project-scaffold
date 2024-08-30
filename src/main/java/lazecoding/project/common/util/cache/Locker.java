@@ -18,7 +18,7 @@ public class Locker {
     /**
      * 锁唯一标识
      */
-    private String lockKey;
+    private final String lockKey;
 
     /**
      * 分布式锁
@@ -35,27 +35,19 @@ public class Locker {
      **/
     public Locker(String lockKey) {
         this.lockKey = lockKey;
-        if (RedissonClientUtil.enableRedis()) {
-            // 分布式锁
-            this.rLock = RedissonClientUtil.getRedissonClient().getLock(this.lockKey);
-        } else {
-            // 本地锁
-            LOCAL_LOCKS.computeIfAbsent(this.lockKey, k -> new ReentrantLock());
-        }
     }
 
     /**
      * 加锁
      **/
     public boolean tryLock() {
-        boolean locked = false;
+        boolean locked;
         if (RedissonClientUtil.enableRedis()) {
+            this.rLock = RedissonClientUtil.getRedissonClient().getLock(this.lockKey);
             locked = this.rLock.tryLock();
         } else {
-            ReentrantLock lock = LOCAL_LOCKS.get(this.lockKey);
-            if (lock != null) {
+            ReentrantLock lock = LOCAL_LOCKS.computeIfAbsent(this.lockKey, k -> new ReentrantLock());
                 locked = lock.tryLock();
-            }
         }
         return locked;
     }
@@ -64,14 +56,13 @@ public class Locker {
      * 加锁
      **/
     public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
-        boolean locked = false;
+        boolean locked;
         if (RedissonClientUtil.enableRedis()) {
+            this.rLock = RedissonClientUtil.getRedissonClient().getLock(this.lockKey);
             locked = this.rLock.tryLock(timeout, unit);
         } else {
-            ReentrantLock lock = LOCAL_LOCKS.get(this.lockKey);
-            if (lock != null) {
-                locked = lock.tryLock(timeout, unit);
-            }
+            ReentrantLock lock = LOCAL_LOCKS.computeIfAbsent(this.lockKey, k -> new ReentrantLock());
+            locked = lock.tryLock(timeout, unit);
         }
         return locked;
     }
@@ -92,7 +83,6 @@ public class Locker {
                 LOCAL_LOCKS.remove(this.lockKey);
             }
         }
-        this.lockKey = null;
     }
 
 }
