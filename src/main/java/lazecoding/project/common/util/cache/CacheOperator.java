@@ -3,7 +3,6 @@ package lazecoding.project.common.util.cache;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RBuckets;
-import org.redisson.api.RLock;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -175,20 +174,6 @@ public class CacheOperator {
      */
     public static long decr(String key, long step) {
         return incr(key, Math.negateExact(step));
-    }
-
-
-    /**
-     * 获取分布式锁 RLock
-     *
-     * @param lockKey 锁的唯一键
-     */
-    public static RLock getLock(String lockKey) {
-        if (!StringUtils.hasText(lockKey)) {
-            return null;
-        }
-        lockKey = "locker:" + lockKey;
-        return RedissonClientUtil.getRedissonClient().getLock(lockKey);
     }
 
     /**
