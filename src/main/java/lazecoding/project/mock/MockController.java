@@ -1,29 +1,21 @@
 package lazecoding.project.mock;
 
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.extra.mail.MailAccount;
 import cn.hutool.extra.mail.MailUtil;
 import lazecoding.project.common.entity.User;
 import lazecoding.project.common.exception.BusException;
 import lazecoding.project.common.mvc.ResultBean;
 import lazecoding.project.common.util.JsonUtil;
 import lazecoding.project.common.util.cache.CacheOperator;
-import lazecoding.project.common.util.cache.RedissonClientUtil;
 import lazecoding.project.repository.UserRepository;
-import org.redisson.api.RBucket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,45 +30,8 @@ public class MockController {
 
     private static final Logger logger = LoggerFactory.getLogger(MockController.class);
 
-    @Resource
-    private RedisTemplate<String, String> redisTemplate;
-
     @Autowired
     private UserRepository userRepository;
-
-    /**
-     * redisTemplateMock
-     */
-    @RequestMapping(value = "redis-template-mock", method = RequestMethod.GET)
-    @ResponseBody
-    public ResultBean redisTemplateMock() {
-        ResultBean resultBean = ResultBean.getInstance();
-        String message = "";
-        boolean isSuccess = false;
-        try {
-            String mockValue = redisTemplate.opsForValue().get("redis-template-mock");
-            System.out.println("mockValue 1:" + mockValue);
-            redisTemplate.opsForValue().set("redis-template-mock", "mock1");
-            mockValue = redisTemplate.opsForValue().get("redis-template-mock");
-            System.out.println("mockValue 2:" + mockValue);
-            redisTemplate.opsForValue().set("redis-template-mock", "mock2");
-            System.out.println("mockValue 3:" + mockValue);
-            redisTemplate.delete("redis-template-mock");
-            mockValue = redisTemplate.opsForValue().get("redis-template-mock");
-            System.out.println("mockValue 4:" + mockValue);
-            isSuccess = true;
-            message = "获取成功";
-        } catch (BusException e) {
-            logger.error("redisTemplateMock 异常", e);
-            message = e.getMessage();
-        } catch (Exception e) {
-            logger.error("redisTemplateMock 异常", e);
-            message = "系统异常";
-        }
-        resultBean.setSuccess(isSuccess);
-        resultBean.setMessage(message);
-        return resultBean;
-    }
 
     /**
      * redissonMock
@@ -88,24 +43,9 @@ public class MockController {
         String message = "";
         boolean isSuccess = false;
         try {
-            RBucket<String> bucket = RedissonClientUtil.getRedissonClient().getBucket("redis-template-mock");
-
-            String mockValue = bucket.get();
-            System.out.println("mockValue 1:" + mockValue);
-            bucket.set("mock1");
-            mockValue = bucket.get();
-            System.out.println("mockValue 2:" + mockValue);
-            bucket.set("mock2");
-            System.out.println("mockValue 3:" + mockValue);
-
             CacheOperator.set("redis-template-mock", "CacheOperator 3 - 1");
-            mockValue = CacheOperator.get("redis-template-mock");
+            String mockValue = CacheOperator.get("redis-template-mock");
             System.out.println("mockValue 3 - 1:" + mockValue);
-
-            bucket.delete();
-            mockValue = bucket.get();
-            System.out.println("mockValue 4:" + mockValue);
-
 
             System.out.println("mockValue incr 1:" + CacheOperator.incr("redis-template-cr"));
             System.out.println("mockValue incr 2:" + CacheOperator.incr("redis-template-cr"));

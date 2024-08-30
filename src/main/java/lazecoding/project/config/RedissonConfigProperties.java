@@ -18,6 +18,11 @@ public class RedissonConfigProperties implements Serializable {
     private static final long serialVersionUID = 8815222005846355408L;
 
     /**
+     * 是否使用 Redis 缓存，关闭则使用本地缓存
+     */
+    private Boolean enable = Boolean.FALSE;
+
+    /**
      * 密码
      */
     private String password;
@@ -97,6 +102,14 @@ public class RedissonConfigProperties implements Serializable {
                     ", database=" + database +
                     '}';
         }
+    }
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 
     public String getPassword() {
