@@ -16,7 +16,7 @@ public class UserAddParam implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 登录名
+     * 用户名
      */
     @NotBlank
     @Schema(description = "用户名", example = "admin")
@@ -40,7 +40,6 @@ public class UserAddParam implements Serializable {
      */
     @Schema(description = "邮箱", example = "lazy@mail.com")
     private String mail;
-
 
     /**
      * 用户角色

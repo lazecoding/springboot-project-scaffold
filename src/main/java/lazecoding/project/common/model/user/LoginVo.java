@@ -1,5 +1,6 @@
 package lazecoding.project.common.model.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lazecoding.project.common.model.BaseVo;
 
 /**
@@ -7,17 +8,20 @@ import lazecoding.project.common.model.BaseVo;
  *
  * @author lazecoding
  */
+@Schema(description = "登录返回")
 public class LoginVo extends BaseVo {
 
 
     /**
      * 用户名
      */
+    @Schema(description = "用户名", example = "admin")
     private String uname;
 
     /**
      * 登录 token
      */
+    @Schema(description = "授权 token", example = "XXX")
     private String accessToken;
 
 

@@ -52,6 +52,12 @@ public class User extends BaseEntity {
     private String pwd;
 
     /**
+     * 真实姓名
+     */
+    @Column(name = "real_name", length = 50, columnDefinition = "varchar(50)")
+    private String realName;
+
+    /**
      * 手机号
      */
     @Column(name = "phone", length = 50, columnDefinition = "varchar(50) default ''")
@@ -117,6 +123,14 @@ public class User extends BaseEntity {
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
     public String getPhone() {

@@ -15,7 +15,7 @@ public class LoginParam implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 登录名
+     * 用户名
      */
     @NotNull
     @Schema(description = "用户名", example = "admin")

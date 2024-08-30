@@ -6,11 +6,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lazecoding.project.common.exception.BusException;
+import lazecoding.project.common.util.page.PageParam;
 import lazecoding.project.common.model.user.UserAddParam;
+import lazecoding.project.common.model.user.UserListParam;
+import lazecoding.project.common.model.user.UserVo;
 import lazecoding.project.common.mvc.ResultBean;
+import lazecoding.project.common.util.page.ProcessedPage;
 import lazecoding.project.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +56,34 @@ public class UserController {
             message = e.getMessage();
         } catch (Exception e) {
             logger.error("新增用户异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+    @Operation(summary = "用户列表", description = "用户列表")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
+    @PostMapping(value = "list")
+    @ResponseBody
+    public ResultBean list(@ParameterObject UserListParam userAddParam, @ParameterObject PageParam pageParam) {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            ProcessedPage<UserVo> processedPage = userService.list(userAddParam, pageParam);
+            resultBean.addData("page", processedPage);
+            isSuccess = true;
+        } catch (BusException e) {
+            logger.error("用户列表异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("用户列表异常", e);
             message = "系统异常";
         }
         resultBean.setSuccess(isSuccess);
