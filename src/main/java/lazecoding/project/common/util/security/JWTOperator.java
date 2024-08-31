@@ -65,6 +65,19 @@ public class JWTOperator {
      * 创建用户 token
      **/
     public static String createAccessToken(String uid, String uname) {
+        JWTUser jwtUser = new JWTUser(uid, uname);
+        return createAccessToken(jwtUser);
+    }
+
+    /**
+     * 创建用户 token
+     **/
+    public static String createAccessToken(JWTUser jwtUser) {
+        if (jwtUser == null) {
+            throw new NilParamException("create access token jwt user is null");
+        }
+        String uid = jwtUser.getUid();
+        String uname = jwtUser.getUname();
         if (!StringUtils.hasText(uid) || !StringUtils.hasText(uname)) {
             throw new NilParamException("create access token param has null");
         }
@@ -81,17 +94,9 @@ public class JWTOperator {
         map.put(JWTPayload.NOT_BEFORE, now);
         // 过期时间
         map.put(JWTPayload.EXPIRES_AT, exp);
+        // 更新 jwtUser 的过期时间
+        jwtUser.setExp(exp.getTime());
         return JWTUtil.createToken(map, SECRET_BYTE);
-    }
-
-    /**
-     * 创建用户 token
-     **/
-    public static String createAccessToken(JWTUser jwtUser) {
-        if (jwtUser == null) {
-            throw new NilParamException("create access token jwt user is null");
-        }
-        return createAccessToken(jwtUser.getUid(), jwtUser.getUname());
     }
 
     /**

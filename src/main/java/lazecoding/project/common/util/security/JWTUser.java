@@ -31,6 +31,11 @@ public class JWTUser implements Serializable {
     public JWTUser() {
     }
 
+    public JWTUser(String uid, String uname) {
+        this.uid = uid;
+        this.uname = uname;
+    }
+
     public JWTUser(String uid, String uname, long exp) {
         this.uid = uid;
         this.uname = uname;

@@ -47,7 +47,6 @@ public class Role {
      */
     public static final Map<String, RoleDetail> ROLES = new HashMap<>() {
         {
-            put(SUPER, new RoleDetail(SUPER, "超级管理员", "超级管理员"));
             put(ADMIN, new RoleDetail(ADMIN, "系统管理员", "系统管理员"));
             put(ORGANISER, new RoleDetail(ORGANISER, "组织管理员", "组织管理员"));
             put(INFO, new RoleDetail(INFO, "信息员", "信息员"));
