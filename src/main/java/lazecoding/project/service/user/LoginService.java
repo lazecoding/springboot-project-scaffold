@@ -56,7 +56,7 @@ public class LoginService {
         if (!StringUtils.hasText(accessToken)) {
             throw new BusException("获取 token 异常，登录失败");
         }
-        // 获取 token 成功，将 token 持久化到 Redis 表示 token 有效，并设置有效期
+        // 获取 token 成功，将 token 持久化到缓存表示 token 有效，并设置有效期
         boolean isSuccess = CacheOperator.set(CacheConstants.ACCESS_TOKEN.getCacheKey(accessToken), uid,
                 CacheConstants.ACCESS_TOKEN.getTtl(), CacheConstants.ACCESS_TOKEN.getTimeUnit());
         if (!isSuccess) {
@@ -114,6 +114,7 @@ public class LoginService {
         currentUser.setUname(user.getUname());
         currentUser.setRoles(user.getRoleSet());
         currentUser.setAccessToken(accessToken);
+        currentUser.setExp(jwtUser.getExp());
         return currentUser;
     }
 

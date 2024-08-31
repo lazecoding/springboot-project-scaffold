@@ -1,5 +1,6 @@
 package lazecoding.project.common.util.security;
 
+import cn.hutool.core.convert.NumberWithFormat;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.jwt.JWT;
@@ -14,7 +15,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -111,6 +111,9 @@ public class JWTOperator {
         return pass;
     }
 
+    /**
+     * 获取当前用户
+     */
     public static JWTUser getJwtUserByToken(String token) {
         if (!StringUtils.hasText(token)) {
             throw new NilParamException("token is nil");
@@ -120,7 +123,11 @@ public class JWTOperator {
             JWT jwt = JWTUtil.parseToken(token);
             String uid = (String) jwt.getPayload("uid");
             String uname = (String) jwt.getPayload("uname");
-            jwtUser = new JWTUser(uid, uname);
+            // 过期时间（秒级时间戳）
+            NumberWithFormat expNumber = (NumberWithFormat) jwt.getPayload(JWTPayload.EXPIRES_AT);
+            // 过期时间（毫秒级时间戳）
+            long exp = expNumber.longValue() * 1000;
+            jwtUser = new JWTUser(uid, uname, exp);
         } catch (Exception e) {
             logger.error("get jwt user by token exception", e);
         }
@@ -131,22 +138,8 @@ public class JWTOperator {
      * 获取当前用户
      */
     public static JWTUser getCurrentJwtUser() {
-        String token = getAccessToken();
-        if (!StringUtils.hasText(token)) {
-            throw new NilParamException("token is nil");
-        }
-        JWTUser jwtUser = null;
-        try {
-            JWT jwt = JWTUtil.parseToken(token);
-            String uid = (String) jwt.getPayload("uid");
-            String uname = (String) jwt.getPayload("uname");
-            jwtUser = new JWTUser(uid, uname);
-        } catch (Exception e) {
-            logger.error("get jwt user by token exception", e);
-        }
-        return jwtUser;
+        return getJwtUserByToken(getAccessToken());
     }
-
 
     /**
      * 获取 access-token

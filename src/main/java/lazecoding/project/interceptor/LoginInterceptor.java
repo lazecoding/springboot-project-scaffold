@@ -1,7 +1,10 @@
 package lazecoding.project.interceptor;
 
+import lazecoding.project.common.constant.CacheConstants;
 import lazecoding.project.common.model.user.CurrentUser;
 import lazecoding.project.common.util.BeanUtil;
+import lazecoding.project.common.util.cache.CacheOperator;
+import lazecoding.project.common.util.security.JWTOperator;
 import lazecoding.project.service.user.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (currentUser == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
+        }
+        long exp = currentUser.getExp();
+        if (exp - System.currentTimeMillis() < 1000 * 60 * 60 * 48) {
+            // token 过期时间小于 48 小时，刷新 token 有效期
+            String uid = currentUser.getUid();
+            String accessToken = JWTOperator.createAccessToken(uid, currentUser.getUname());
+            response.addCookie(JWTOperator.getLoginCookie(accessToken));
+            // 获取 token 成功，将 token 持久化到缓存表示 token 有效，并设置有效期
+            boolean isSuccess = CacheOperator.set(CacheConstants.ACCESS_TOKEN.getCacheKey(accessToken), uid,
+                    CacheConstants.ACCESS_TOKEN.getTtl(), CacheConstants.ACCESS_TOKEN.getTimeUnit());
+            logger.debug("LoginInterceptor Refresh Access Token isSuccess:[{}] token:[{}]", isSuccess, accessToken);
         }
         return true;
     }

@@ -23,13 +23,18 @@ public class JWTUser implements Serializable {
      */
     private String uname;
 
+    /**
+     * 过期时间
+     */
+    private long exp;
 
     public JWTUser() {
     }
 
-    public JWTUser(String uid, String uname) {
+    public JWTUser(String uid, String uname, long exp) {
         this.uid = uid;
         this.uname = uname;
+        this.exp = exp;
     }
 
     public String getUid() {
@@ -48,4 +53,11 @@ public class JWTUser implements Serializable {
         this.uname = uname;
     }
 
+    public long getExp() {
+        return exp;
+    }
+
+    public void setExp(long exp) {
+        this.exp = exp;
+    }
 }

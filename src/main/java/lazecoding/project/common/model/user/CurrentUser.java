@@ -35,6 +35,12 @@ public class CurrentUser implements Serializable {
     private String accessToken;
 
     /**
+     * accessToken 过期时间
+     */
+    @Schema(description = "过期时间")
+    private long exp;
+
+    /**
      * 用户角色
      */
     @Schema(description = "用户角色")
@@ -62,6 +68,14 @@ public class CurrentUser implements Serializable {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public long getExp() {
+        return exp;
+    }
+
+    public void setExp(long exp) {
+        this.exp = exp;
     }
 
     public Set<String> getRoles() {
