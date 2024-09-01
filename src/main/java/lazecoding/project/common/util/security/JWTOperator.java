@@ -47,18 +47,17 @@ public class JWTOperator {
     /**
      * 最大有效时长 7 天，单位 秒
      */
-    public static int MAX_AGE_SECOND = 7* 24 * 60 * 60;
+    public static int MAX_AGE_SECOND = MAX_AGE_DAY * 24 * 60 * 60;
 
     /**
      * 最大有效时长 7 天，单位 毫秒
      */
-    public static long MAX_AGE_MILLISECOND = 7* 24 * 60 * 60 * 60;
+    public static long MAX_AGE_MILLISECOND = MAX_AGE_DAY * 24 * 60 * 60 * 60L;
 
     /**
      * 用户 token 名称
      */
     public static String TOKEN_NAME = "access-token";
-
 
 
     /**
@@ -87,7 +86,7 @@ public class JWTOperator {
         map.put("uname", uname);
         // 基础属性
         DateTime now = DateTime.now();
-        DateTime exp = now.offsetNew(DateField.DAY_OF_YEAR, 7);
+        DateTime exp = now.offsetNew(DateField.DAY_OF_YEAR, MAX_AGE_DAY);
         // 签发时间
         map.put(JWTPayload.ISSUED_AT, now);
         // 生效时间
@@ -217,7 +216,6 @@ public class JWTOperator {
         cookie.setMaxAge(0);
         return cookie;
     }
-
 
 
     public static void main(String[] args) {

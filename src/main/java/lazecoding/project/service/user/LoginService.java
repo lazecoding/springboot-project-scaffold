@@ -9,11 +9,15 @@ import lazecoding.project.common.model.user.LoginVo;
 import lazecoding.project.common.util.cache.CacheOperator;
 import lazecoding.project.common.util.security.JWTOperator;
 import lazecoding.project.common.util.security.JWTUser;
+import lazecoding.project.common.util.security.constant.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 用户登录
@@ -52,13 +56,20 @@ public class LoginService {
             throw new BusException("密码错误");
         }
         String uid = user.getUid();
-        String accessToken = JWTOperator.createAccessToken(uid, uname);
+        JWTUser jwtUser = new JWTUser(uid, uname);
+        String accessToken = JWTOperator.createAccessToken(jwtUser);
         if (!StringUtils.hasText(accessToken)) {
             throw new BusException("获取 token 异常，登录失败");
         }
+        CurrentUser currentUser = new CurrentUser();
+        currentUser.setUid(uid);
+        currentUser.setUname(uname);
+        currentUser.setRoles(user.getRoleSet());
+        currentUser.setAccessToken(accessToken);
+        currentUser.setExp(jwtUser.getExp());
         // 获取 token 成功，将 token 持久化到缓存表示 token 有效，并设置有效期
-        boolean isSuccess = CacheOperator.set(CacheConstants.ACCESS_TOKEN.getCacheKey(accessToken), uid,
-                CacheConstants.ACCESS_TOKEN.getTtl(), CacheConstants.ACCESS_TOKEN.getTimeUnit());
+        boolean isSuccess = CacheOperator.set(CacheConstants.CURRENT_USER.getCacheKey(accessToken), currentUser,
+                CacheConstants.CURRENT_USER.getTtl(), CacheConstants.CURRENT_USER.getTimeUnit());
         if (!isSuccess) {
             throw new BusException("token 存储异常，登录失败");
         }
@@ -76,7 +87,7 @@ public class LoginService {
             return true;
         }
         // 移除 token
-        CacheOperator.delete(CacheConstants.ACCESS_TOKEN.getCacheKey(accessToken));
+        CacheOperator.delete(CacheConstants.CURRENT_USER.getCacheKey(accessToken));
         JWTUser jwtUser = JWTOperator.getJwtUserByToken(accessToken);
         if (jwtUser == null) {
             return true;
@@ -101,15 +112,16 @@ public class LoginService {
         if (!StringUtils.hasText(uid)) {
             return null;
         }
-        boolean exists  = CacheOperator.exists(CacheConstants.ACCESS_TOKEN.getCacheKey(accessToken));
-        if (!exists) {
-            return null;
+        CurrentUser currentUser  = CacheOperator.get(CacheConstants.CURRENT_USER.getCacheKey(accessToken));
+        if (currentUser != null) {
+            return currentUser;
         }
+        // 如果需要用户 token 实时生效，需要从 User 中读取权限，不建议
         User user = userService.findByUid(uid);
         if (user == null) {
             throw new BusException("用户信息异常，请联系管理员");
         }
-        CurrentUser currentUser = new CurrentUser();
+        currentUser = new CurrentUser();
         currentUser.setUid(uid);
         currentUser.setUname(user.getUname());
         currentUser.setRoles(user.getRoleSet());

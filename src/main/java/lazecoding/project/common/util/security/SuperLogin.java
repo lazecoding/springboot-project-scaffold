@@ -70,13 +70,6 @@ public class SuperLogin {
             if (!StringUtils.hasText(accessToken)) {
                 throw new BusException("获取 token 异常，登录失败");
             }
-            // 获取 token 成功，将 token 持久化到缓存表示 token 有效，并设置有效期
-            isSuccess = CacheOperator.set(CacheConstants.ACCESS_TOKEN.getCacheKey(accessToken), uid,
-                    CacheConstants.ACCESS_TOKEN.getTtl(), CacheConstants.ACCESS_TOKEN.getTimeUnit());
-            if (!isSuccess) {
-                throw new BusException("token 存储异常，登录失败");
-            }
-            // TODO CurrentUser 缓存
             Set<String> roleSet = new HashSet<>();
             roleSet.add(Role.SUPER);
             CurrentUser currentUser = new CurrentUser();
@@ -85,6 +78,12 @@ public class SuperLogin {
             currentUser.setRoles(roleSet);
             currentUser.setAccessToken(accessToken);
             currentUser.setExp(jwtUser.getExp());
+            // 获取 token 成功，将 token 持久化到缓存表示 token 有效，并设置有效期
+            isSuccess = CacheOperator.set(CacheConstants.CURRENT_USER.getCacheKey(accessToken), currentUser,
+                    CacheConstants.CURRENT_USER.getTtl(), CacheConstants.CURRENT_USER.getTimeUnit());
+            if (!isSuccess) {
+                throw new BusException("token 存储异常，登录失败");
+            }
             httpServletResponse.addCookie(JWTOperator.getLoginCookie(accessToken));
             resultBean.addData("currentUser", currentUser);
         } catch (BusException e) {

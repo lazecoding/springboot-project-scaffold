@@ -1,7 +1,6 @@
 package lazecoding.project.common.constant;
 
 import lazecoding.project.common.util.security.JWTOperator;
-
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,29 +13,28 @@ public enum CacheConstants {
 
     /**
      * 用户 token
-     * key: token; value：userId
+     * key: token; value：CurrentUser
      */
-    ACCESS_TOKEN(ProjectConstants.PROJECT_NAME + ":access-token:", JWTOperator.MAX_AGE_MILLISECOND, TimeUnit.MILLISECONDS);
+    CURRENT_USER(ProjectConstants.PROJECT_NAME + ":current-user:", JWTOperator.MAX_AGE_MILLISECOND, TimeUnit.MILLISECONDS);
 
-    private final String name;
+    private final String head;
 
     private final Long ttl;
 
     private final TimeUnit timeUnit;
 
-
-    private CacheConstants(String name, Long ttl, TimeUnit timeUnit) {
-        this.name = name;
+    CacheConstants(String head, Long ttl, TimeUnit timeUnit) {
+        this.head = head;
         this.ttl = ttl;
         this.timeUnit = timeUnit;
     }
 
-    public String getName() {
-        return name;
+    public String getHead() {
+        return head;
     }
 
     public String getCacheKey(String key) {
-        return name + key;
+        return head + key;
     }
 
     public Long getTtl() {
