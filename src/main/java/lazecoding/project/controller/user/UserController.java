@@ -12,6 +12,8 @@ import lazecoding.project.common.model.user.UserListParam;
 import lazecoding.project.common.model.user.UserVo;
 import lazecoding.project.common.mvc.ResultBean;
 import lazecoding.project.common.util.page.ProcessedPage;
+import lazecoding.project.common.util.security.annotation.RequireRoles;
+import lazecoding.project.common.util.security.constant.Role;
 import lazecoding.project.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "用户", description = "操作用户属性")
 @RestController
 @RequestMapping("manager/user")
+@RequireRoles({Role.ADMIN, Role.ORGANISER})
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);

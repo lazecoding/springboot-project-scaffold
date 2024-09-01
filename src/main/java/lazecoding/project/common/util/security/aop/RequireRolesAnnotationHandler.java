@@ -3,6 +3,7 @@ package lazecoding.project.common.util.security.aop;
 import lazecoding.project.common.model.user.CurrentUser;
 import lazecoding.project.common.mvc.ResultBean;
 import lazecoding.project.common.util.security.annotation.RequireRoles;
+import lazecoding.project.common.util.security.constant.Role;
 import lazecoding.project.common.util.security.exception.NoPermissionsException;
 import lazecoding.project.service.user.LoginService;
 import org.aspectj.lang.JoinPoint;
@@ -124,6 +125,10 @@ public class RequireRolesAnnotationHandler {
                 Set<String> roles = currentUser.getRoles();
                 if (roles == null || roles.isEmpty()) {
                     throw new NoPermissionsException();
+                }
+                // 如果是超级管理员，直接通过
+                if (roles.contains(Role.SUPER)) {
+                    return;
                 }
                 // 判断用户是否拥有设置的权限
                 for (String role : roles) {
