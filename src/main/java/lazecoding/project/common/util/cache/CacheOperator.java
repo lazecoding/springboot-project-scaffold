@@ -1,10 +1,6 @@
 package lazecoding.project.common.util.cache;
 
-import org.redisson.api.RAtomicLong;
-import org.redisson.api.RBucket;
-import org.redisson.api.RBuckets;
 import org.springframework.util.StringUtils;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +30,12 @@ public class CacheOperator {
         if (!StringUtils.hasText(key)) {
             return 0L;
         }
-        return RedissonClientUtil.getRedissonClient().getKeys().delete(key);
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.delete(key);
+        } else {
+            CaffeineOperator.getInstance().delete(key);
+            return 1L;
+        }
     }
 
     /**
@@ -44,7 +45,12 @@ public class CacheOperator {
         if (keys == null || keys.isEmpty()) {
             return 0L;
         }
-        return RedissonClientUtil.getRedissonClient().getKeys().delete(keys.toArray(new String[0]));
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.deletes(keys);
+        } else {
+            CaffeineOperator.getInstance().deletes(keys);
+            return 1L;
+        }
     }
 
     /**
@@ -54,7 +60,11 @@ public class CacheOperator {
         if (!StringUtils.hasText(pattern)) {
             return null;
         }
-        return RedissonClientUtil.getRedissonClient().getKeys().getKeysByPattern(pattern);
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.keys(pattern);
+        } else {
+            return CaffeineOperator.getInstance().keys(pattern);
+        }
     }
 
     /**
@@ -64,14 +74,26 @@ public class CacheOperator {
         if (!StringUtils.hasText(pattern)) {
             return 0L;
         }
-        return RedissonClientUtil.getRedissonClient().getKeys().deleteByPattern(pattern);
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.deleteKeys(pattern);
+        } else {
+            CaffeineOperator.getInstance().deleteKeys(pattern);
+            return 1L;
+        }
     }
 
     /**
      * 设置 ttl，单位 秒
      */
     public static boolean expire(String key, long ttl) {
-        return RedissonClientUtil.getRedissonClient().getKeys().expire(key, ttl, TimeUnit.SECONDS);
+        if (!StringUtils.hasText(key)) {
+            return false;
+        }
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.expire(key, ttl, TimeUnit.SECONDS);
+        } else {
+            return CaffeineOperator.getInstance().expire(key, ttl);
+        }
     }
 
 
@@ -79,14 +101,28 @@ public class CacheOperator {
      * 设置 ttl
      */
     public static boolean expire(String key, long ttl, TimeUnit timeUnit) {
-        return RedissonClientUtil.getRedissonClient().getKeys().expire(key, ttl, timeUnit);
+        if (!StringUtils.hasText(key)) {
+            return false;
+        }
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.expire(key, ttl, timeUnit);
+        } else {
+            return CaffeineOperator.getInstance().expire(key, ttl, timeUnit);
+        }
     }
 
     /**
      * 获取 ttl，单位 秒
      */
     public static long ttl(String key) {
-        return RedissonClientUtil.getRedissonClient().getKeys().remainTimeToLive(key);
+        if (!StringUtils.hasText(key)) {
+            return -2L;
+        }
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.ttl(key);
+        } else {
+            return CaffeineOperator.getInstance().ttl(key);
+        }
     }
 
     /**
@@ -96,8 +132,11 @@ public class CacheOperator {
         if (!StringUtils.hasText(key)) {
             return null;
         }
-        RBucket<T> rBucket = RedissonClientUtil.getRedissonClient().getBucket(key);
-        return rBucket.get();
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.get(key);
+        } else {
+            return CaffeineOperator.getInstance().get(key);
+        }
     }
 
     /**
@@ -107,32 +146,54 @@ public class CacheOperator {
         if (keys == null || keys.isEmpty()) {
             return null;
         }
-        RBuckets rBuckets = RedissonClientUtil.getRedissonClient().getBuckets();
-        return rBuckets.get(keys.toArray(new String[0]));
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.gets(keys);
+        } else {
+            return CaffeineOperator.getInstance().gets(keys);
+        }
     }
 
     /**
      * 存储缓存
      */
     public static <T> void set(String key, T value) {
-        RBucket<T> rBucket = RedissonClientUtil.getRedissonClient().getBucket(key);
-        rBucket.set(value);
+        if (!StringUtils.hasText(key)) {
+            return;
+        }
+        if (RedissonClientUtil.enableRedis()) {
+            RedissonOperator.set(key, value);
+        } else {
+            CaffeineOperator.getInstance().set(key, value);
+        }
     }
 
     /**
      * 存储缓存并设置 ttl，单位 秒
      */
-    public static <T> void set(String key, T value, long ttl) {
-        RBucket<T> rBucket = RedissonClientUtil.getRedissonClient().getBucket(key);
-        rBucket.set(value, ttl, TimeUnit.SECONDS);
+    public static <T> boolean set(String key, T value, long ttl) {
+        if (!StringUtils.hasText(key)) {
+            return false;
+        }
+        if (RedissonClientUtil.enableRedis()) {
+            RedissonOperator.set(key, value, ttl);
+        } else {
+            CaffeineOperator.getInstance().set(key, value, ttl);
+        }
+        return true;
     }
 
     /**
      * 存储缓存并设置 ttl
      */
     public static <T> boolean set(String key, T value, long ttl, TimeUnit timeUnit) {
-        RBucket<T> rBucket = RedissonClientUtil.getRedissonClient().getBucket(key);
-        rBucket.set(value, ttl, timeUnit);
+        if (!StringUtils.hasText(key)) {
+            return false;
+        }
+        if (RedissonClientUtil.enableRedis()) {
+            RedissonOperator.set(key, value, ttl, timeUnit);
+        } else {
+            CaffeineOperator.getInstance().set(key, value, ttl, timeUnit);
+        }
         return true;
     }
 
@@ -143,8 +204,11 @@ public class CacheOperator {
         if (!StringUtils.hasText(key)) {
             return 0L;
         }
-        RAtomicLong rAtomicLong = RedissonClientUtil.getRedissonClient().getAtomicLong(key);
-        return rAtomicLong.incrementAndGet();
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.incr(key);
+        } else {
+            return CaffeineOperator.getInstance().incr(key);
+        }
     }
 
     /**
@@ -154,8 +218,11 @@ public class CacheOperator {
         if (!StringUtils.hasText(key)) {
             return 0L;
         }
-        RAtomicLong rAtomicLong = RedissonClientUtil.getRedissonClient().getAtomicLong(key);
-        return rAtomicLong.addAndGet(step);
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.incr(key, step);
+        } else {
+            return CaffeineOperator.getInstance().incr(key, step);
+        }
     }
 
     /**
@@ -165,8 +232,11 @@ public class CacheOperator {
         if (!StringUtils.hasText(key)) {
             return 0L;
         }
-        RAtomicLong rAtomicLong = RedissonClientUtil.getRedissonClient().getAtomicLong(key);
-        return rAtomicLong.decrementAndGet();
+        if (RedissonClientUtil.enableRedis()) {
+            return RedissonOperator.decr(key);
+        } else {
+            return CaffeineOperator.getInstance().decr(key);
+        }
     }
 
     /**
