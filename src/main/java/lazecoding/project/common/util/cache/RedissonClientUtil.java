@@ -14,7 +14,7 @@ public class RedissonClientUtil {
 
     private static RedissonClient redissonClient;
 
-    private static final RedissonConfigProperties redissonConfigProperties = BeanUtil.getBean(RedissonConfigProperties.class);
+    private static final RedissonConfigProperties REDISSON_CONFIG_PROPERTIES = BeanUtil.getBean(RedissonConfigProperties.class);
 
     private RedissonClientUtil() {
     }
@@ -23,7 +23,9 @@ public class RedissonClientUtil {
         if (enableRedis()) {
             if (ObjectUtils.isEmpty(redissonClient)) {
                 synchronized (RedissonClientUtil.class) {
-                    redissonClient = BeanUtil.getBean(RedissonClient.class);
+                    if (ObjectUtils.isEmpty(redissonClient)) {
+                        redissonClient = BeanUtil.getBean(RedissonClient.class);
+                    }
                 }
             }
         }
@@ -34,7 +36,7 @@ public class RedissonClientUtil {
      * 是否启用 Redis，不启用则使用本地缓存
      */
     public static boolean enableRedis() {
-        return redissonConfigProperties.getEnable();
+        return REDISSON_CONFIG_PROPERTIES.getEnable();
     }
 
 }
