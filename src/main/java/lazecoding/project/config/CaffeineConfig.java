@@ -18,11 +18,11 @@ public class CaffeineConfig {
     public Cache<String, Object> caffeineCache() {
         return Caffeine.newBuilder()
                 // 初始容量
-                .initialCapacity(128)
+                .initialCapacity(1024)
                 // 最大容量
-                .maximumSize(1024 * 10)
+                // .maximumSize(1024 * 10)
                 // 上次读写超过一定时间后过期
-                .expireAfterAccess(60, TimeUnit.MINUTES)
+                //.expireAfterAccess(60, TimeUnit.MINUTES)
                 .build();
     }
 }
