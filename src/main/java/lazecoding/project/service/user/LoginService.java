@@ -9,15 +9,11 @@ import lazecoding.project.common.model.user.LoginVo;
 import lazecoding.project.common.util.cache.CacheOperator;
 import lazecoding.project.common.util.security.JWTOperator;
 import lazecoding.project.common.util.security.JWTUser;
-import lazecoding.project.common.util.security.constant.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 用户登录
@@ -112,21 +108,11 @@ public class LoginService {
         if (!StringUtils.hasText(uid)) {
             return null;
         }
-        CurrentUser currentUser  = CacheOperator.get(CacheConstants.CURRENT_USER.getCacheKey(accessToken));
-        if (currentUser != null) {
-            return currentUser;
+        CurrentUser currentUser = CacheOperator.get(CacheConstants.CURRENT_USER.getCacheKey(accessToken));
+        if (currentUser == null) {
+            throw new BusException("请重新登录");
         }
         // 如果需要用户 token 实时生效，需要从 User 中读取权限，不建议
-        User user = userService.findByUid(uid);
-        if (user == null) {
-            throw new BusException("用户信息异常，请联系管理员");
-        }
-        currentUser = new CurrentUser();
-        currentUser.setUid(uid);
-        currentUser.setUname(user.getUname());
-        currentUser.setRoles(user.getRoleSet());
-        currentUser.setAccessToken(accessToken);
-        currentUser.setExp(jwtUser.getExp());
         return currentUser;
     }
 
