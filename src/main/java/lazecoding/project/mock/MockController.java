@@ -36,30 +36,19 @@ public class MockController {
     /**
      * redissonMock
      */
-    @RequestMapping(value = "redisson-mock", method = RequestMethod.GET)
+    @RequestMapping(value = "cache-mock", method = RequestMethod.GET)
     @ResponseBody
-    public ResultBean redissonMock() {
+    public ResultBean cacheMock() {
         ResultBean resultBean = ResultBean.getInstance();
         String message = "";
         boolean isSuccess = false;
         try {
             CacheOperator.set("redis-template-mock", "CacheOperator 3 - 1");
             String mockValue = CacheOperator.get("redis-template-mock");
-            System.out.println("mockValue 3 - 1:" + mockValue);
-
-            System.out.println("mockValue incr 1:" + CacheOperator.incr("redis-template-cr"));
-            System.out.println("mockValue incr 2:" + CacheOperator.incr("redis-template-cr"));
-            System.out.println("mockValue incr 3:" + CacheOperator.incr("redis-template-cr", 3));
-            System.out.println("mockValue decr 1:" + CacheOperator.decr("redis-template-cr", 3));
-
-            System.out.println("exists 1:" + CacheOperator.exists("redis-template-cr"));
-
-            Integer cr = CacheOperator.get("redis-template-cr");
-            System.out.println("mockValue cr 1:" + cr);
-            CacheOperator.delete("redis-template-cr");
-            cr = CacheOperator.get("redis-template-cr");
-            System.out.println("mockValue cr 2:" + cr);
-            System.out.println("exists 2:" + CacheOperator.exists("redis-template-cr"));
+            System.out.println(mockValue);
+            CacheOperator.delete("redis-template-mock");
+            mockValue = CacheOperator.get("redis-template-mock");
+            System.out.println(mockValue);
             isSuccess = true;
             message = "获取成功";
 

@@ -99,8 +99,6 @@ public class CaffeineOperator {
             return;
         }
         caffeineCache.invalidate(key);
-        // 处理 ATOMIC_LONG_MAP
-        ATOMIC_LONG_MAP.remove(key);
     }
 
     /**
@@ -111,8 +109,6 @@ public class CaffeineOperator {
             return;
         }
         caffeineCache.invalidateAll(keys);
-        // 处理 ATOMIC_LONG_MAP
-        keys.forEach(ATOMIC_LONG_MAP::remove);
     }
 
     /**
@@ -242,47 +238,6 @@ public class CaffeineOperator {
             }
         }
         return map;
-    }
-
-
-    /**
-     * 递增
-     */
-    public long incr(String key) {
-        if (!StringUtils.hasText(key)) {
-            return 0L;
-        }
-        AtomicLong atomicLong = ATOMIC_LONG_MAP.computeIfAbsent(key, k -> new AtomicLong());
-        return atomicLong.incrementAndGet();
-    }
-
-    /**
-     * 递增 N
-     */
-    public long incr(String key, long step) {
-        if (!StringUtils.hasText(key)) {
-            return 0L;
-        }
-        AtomicLong atomicLong = ATOMIC_LONG_MAP.computeIfAbsent(key, k -> new AtomicLong());
-        return atomicLong.addAndGet(step);
-    }
-
-    /**
-     * 递减
-     */
-    public long decr(String key) {
-        if (!StringUtils.hasText(key)) {
-            return 0L;
-        }
-        AtomicLong atomicLong = ATOMIC_LONG_MAP.computeIfAbsent(key, k -> new AtomicLong());
-        return atomicLong.decrementAndGet();
-    }
-
-    /**
-     * 递减 N
-     */
-    public long decr(String key, long step) {
-        return incr(key, Math.negateExact(step));
     }
 
 

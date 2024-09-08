@@ -198,55 +198,6 @@ public class CacheOperator {
     }
 
     /**
-     * 递增
-     */
-    public static long incr(String key) {
-        if (!StringUtils.hasText(key)) {
-            return 0L;
-        }
-        if (RedissonClientUtil.enableRedis()) {
-            return RedissonOperator.incr(key);
-        } else {
-            return CaffeineOperator.getInstance().incr(key);
-        }
-    }
-
-    /**
-     * 递增 N
-     */
-    public static long incr(String key, long step) {
-        if (!StringUtils.hasText(key)) {
-            return 0L;
-        }
-        if (RedissonClientUtil.enableRedis()) {
-            return RedissonOperator.incr(key, step);
-        } else {
-            return CaffeineOperator.getInstance().incr(key, step);
-        }
-    }
-
-    /**
-     * 递减
-     */
-    public static long decr(String key) {
-        if (!StringUtils.hasText(key)) {
-            return 0L;
-        }
-        if (RedissonClientUtil.enableRedis()) {
-            return RedissonOperator.decr(key);
-        } else {
-            return CaffeineOperator.getInstance().decr(key);
-        }
-    }
-
-    /**
-     * 递减 N
-     */
-    public static long decr(String key, long step) {
-        return incr(key, Math.negateExact(step));
-    }
-
-    /**
      * 私有，禁止实例化
      */
     private CacheOperator() {
