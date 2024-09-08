@@ -1,7 +1,7 @@
 package lazecoding.project.mock;
 
 import lazecoding.project.common.mvc.ResultBean;
-import lazecoding.project.common.util.cache.Locker;
+import lazecoding.project.common.util.concurrent.Locker;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,5 +1,6 @@
-package lazecoding.project.common.util.cache;
+package lazecoding.project.common.util.concurrent;
 
+import lazecoding.project.common.util.cache.RedissonClientUtil;
 import org.redisson.api.RLock;
 
 import java.util.Map;
