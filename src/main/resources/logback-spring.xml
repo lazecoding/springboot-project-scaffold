@@ -5,7 +5,8 @@
     <property name="PATTERN_FOR_LOG" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [${APP_NAME}] [%thread] %5p %c{0}:%L - %m%n"/>
     <!-- 控制台日志 -->
     <property name="PATTERN_FOR_CONSOLE" value="%red(%d{yyyy-MM-dd HH:mm:ss.SSS}) %yellow([${APP_NAME}]) %green([%thread]) %highlight(%5p) %magenta(%c{0}:%L) - %cyan(%m%n)"/>
-    <property name="LOG_ROOT_PATH" value="logs"/>
+    <!-- LOG_HOME 用于自定义，java -DLOG_HOME="路径" -->
+    <property name="LOG_ROOT_PATH" value="${LOG_HOME:-logs}"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <Pattern>${PATTERN_FOR_CONSOLE}</Pattern>
@@ -132,8 +133,7 @@
         <appender-ref ref="warn-log"/>
         <appender-ref ref="error-log"/>
     </root>
-
-    <!-- lazecoding.project 包下 DEBUG -->
-    <logger name="lazecoding.project" level="DEBUG" />
+    <!-- LOG_LEVEL 用于自定义，java -DLOG_LEVEL="DEBUG" -->
+    <logger name="lazecoding.project" level="${LOG_LEVEL:-DEBUG}" />
 
 </configuration>

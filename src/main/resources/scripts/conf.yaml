@@ -1,0 +1,16 @@
+# 环境配置
+
+# app path
+env.app.path: ./springboot-project-scaffold.jar
+
+# JAVA_OPTS
+env.java.opts: -Xms1G -Xmx1G
+
+# 启动端口 --server.port=8080
+env.port: 9977
+
+# 自定义日志路径
+env.log.path: logs
+
+# 自定义日志级别：TRACE > DEBUG > INFO > WARN > ERROR > FATAL
+env.log.level: DEBUG
