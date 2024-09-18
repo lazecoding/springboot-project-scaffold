@@ -3,6 +3,8 @@ package lazecoding.project.common.util.file;
 import cn.hutool.core.io.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.InputStream;
@@ -12,6 +14,7 @@ import java.io.InputStream;
  *
  * @author lazecoding
  */
+@Component("LocalFileOperator")
 public class LocalFileOperator implements FileOperator {
 
 

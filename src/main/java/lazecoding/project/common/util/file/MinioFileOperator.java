@@ -17,6 +17,7 @@ import io.minio.http.Method;
 import lazecoding.project.common.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import java.io.ByteArrayInputStream;
@@ -34,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author lazecoding
  */
-@Component
+@Component("MinioFileOperator")
 public class MinioFileOperator implements FileOperator {
 
     private final static Logger logger = LoggerFactory.getLogger(MinioFileOperator.class);
