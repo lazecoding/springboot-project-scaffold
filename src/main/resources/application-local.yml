@@ -44,7 +44,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-# file operator
+# 文件操作类型
 file:
   # local、minio
   operator: local

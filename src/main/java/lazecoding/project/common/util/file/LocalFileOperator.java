@@ -9,16 +9,29 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.InputStream;
 
+import static lazecoding.project.common.util.file.LocalFileOperator.BEAN_NAME;
+
 /**
  * 本地文件操作
  *
  * @author lazecoding
  */
-@Component("LocalFileOperator")
+@Component(BEAN_NAME)
 public class LocalFileOperator implements FileOperator {
 
 
     private static final Logger logger = LoggerFactory.getLogger(LocalFileOperator.class);
+
+    /**
+     * Bean 名称
+     */
+    public static final String BEAN_NAME = "LocalFileOperator";
+
+
+    /**
+     *  File Operator Type
+     */
+    public static final String TYPE = "local";
 
     /**
      * 是否存在

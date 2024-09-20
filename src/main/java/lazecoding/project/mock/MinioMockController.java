@@ -2,11 +2,16 @@ package lazecoding.project.mock;
 
 import cn.hutool.core.io.FileUtil;
 import lazecoding.project.common.mvc.ResultBean;
+import lazecoding.project.common.util.BeanUtil;
 import lazecoding.project.common.util.file.FileOperator;
+import lazecoding.project.common.util.file.FileOperatorHolder;
 import lazecoding.project.common.util.file.MinioConfig;
 import lazecoding.project.common.util.file.MinioFileOperator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,7 +28,6 @@ public class MinioMockController {
 
     @Resource
     private MinioConfig minioConfig;
-
 
     // http://localhost:9977/file/mock/minio-linux
     @GetMapping(value = "minio-linux")
@@ -86,5 +90,13 @@ public class MinioMockController {
         return resultBean;
     }
 
+    @GetMapping(value = "operator")
+    @ResponseBody
+    public ResultBean operator() {
+        ResultBean resultBean = ResultBean.getInstance();
+        FileOperator fileOperator = FileOperatorHolder.getInstance();
+        System.out.println(fileOperator);
+        return resultBean;
+    }
 
 }

@@ -30,15 +30,29 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static lazecoding.project.common.util.file.MinioFileOperator.BEAN_NAME;
+
 /**
  * Minio 文件操作
  *
  * @author lazecoding
  */
-@Component("MinioFileOperator")
+@Component(BEAN_NAME)
 public class MinioFileOperator implements FileOperator {
 
     private final static Logger logger = LoggerFactory.getLogger(MinioFileOperator.class);
+
+
+    /**
+     * Bean 名称
+     */
+    public static final String BEAN_NAME = "MinioFileOperator";
+
+    /**
+     *  File Operator Type
+     */
+    public static final String TYPE = "minio";
+
 
     // 配置
     private final MinioConfig minioConfig = BeanUtil.getBean(MinioConfig.class);

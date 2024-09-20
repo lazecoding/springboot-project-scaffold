@@ -44,6 +44,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+# 文件操作类型
+file:
+  # local、minio
+  operator: local
 # 文件中心 minio
 minio:
   # 地址
@@ -51,6 +55,7 @@ minio:
   accessKey: IzU1KrAcL0usKbiUffor
   secretKey: IVRPAyM3wcXUqKOPJ4q9TcNQOZ12s1O5ku2WAE7f
   bucket: scaffold
+# MQ
 amqp:
   rabbitmq:
     host: 127.0.0.1
