@@ -1,5 +1,6 @@
 package lazecoding.project.service.user;
 
+import lazecoding.project.common.constant.user.UserStates;
 import lazecoding.project.common.entity.User;
 import lazecoding.project.common.exception.BusException;
 import lazecoding.project.common.model.user.UserModifyParam;
@@ -87,6 +88,8 @@ public class UserService {
         user.setPhone(userAddParam.getPhone());
         user.setMail(userAddParam.getMail());
         user.setRoles(userAddParam.getRoles());
+        // 管理员创建默认未激活
+        user.setState(UserStates.UNACTIVATED);
         User addUser = this.add(user);
         String uid = addUser.getUid();
         logger.info("新增用户 id:[{}] info:[{}]", uid, JsonUtil.GSON.toJson(addUser));
@@ -172,6 +175,32 @@ public class UserService {
         return true;
     }
 
+
+    /**
+     * 冻结用户
+     *
+     * @param uid 用户 Id
+     */
+    public boolean freeze(String uid) {
+        if (!StringUtils.hasText(uid)) {
+            throw new BusException("用户 Id 为空");
+        }
+        User user = this.findByUid(uid);
+        if (user == null) {
+            throw new BusException("用户不存在");
+        }
+        int state = user.getState();
+        if (state == UserStates.FREEZING) {
+            return true;
+        }
+        if (state == UserStates.CANCELLED) {
+            throw new BusException("用户已注销");
+        }
+        user.setState(UserStates.FREEZING);
+        User freezeUser = this.modify(user);
+        logger.info("冻结用户 id:[{}] info:[{}]", uid, JsonUtil.GSON.toJson(freezeUser));
+        return true;
+    }
 
     /**
      * 用户列表
