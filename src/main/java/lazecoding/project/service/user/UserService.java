@@ -156,6 +156,24 @@ public class UserService {
     }
 
     /**
+     * 删除用户
+     *
+     * @param uid 用户 Id
+     */
+    public boolean delete(String uid) {
+        if (!StringUtils.hasText(uid)) {
+            throw new BusException("用户 Id 为空");
+        }
+        User user = this.findByUid(uid);
+        if (user == null) {
+            return true;
+        }
+        userRepository.deleteById(uid);
+        return true;
+    }
+
+
+    /**
      * 用户列表
      */
     public ProcessedPage<UserVo> list(UserListParam userListParam, PageParam pageParam) {

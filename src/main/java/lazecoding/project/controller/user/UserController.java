@@ -1,6 +1,7 @@
 package lazecoding.project.controller.user;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -86,6 +87,33 @@ public class UserController {
             message = e.getMessage();
         } catch (Exception e) {
             logger.error("编辑用户异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+    @Operation(summary = "删除用户", description = "删除用户")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
+    @Parameter(name = "uid", description = "用户 Id", example = "uid", required = true)
+    @PostMapping(value = "delete")
+    @ResponseBody
+    public ResultBean delete(String uid) {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            isSuccess = userService.delete(uid);
+        } catch (BusException e) {
+            logger.error("删除用户异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("删除用户异常", e);
             message = "系统异常";
         }
         resultBean.setSuccess(isSuccess);
