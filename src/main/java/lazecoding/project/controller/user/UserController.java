@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lazecoding.project.common.exception.BusException;
+import lazecoding.project.common.model.user.UserModifyParam;
 import lazecoding.project.common.util.page.PageParam;
 import lazecoding.project.common.model.user.UserAddParam;
 import lazecoding.project.common.model.user.UserListParam;
@@ -59,6 +60,32 @@ public class UserController {
             message = e.getMessage();
         } catch (Exception e) {
             logger.error("新增用户异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+    @Operation(summary = "编辑用户", description = "编辑用户")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
+    @PostMapping(value = "modify")
+    @ResponseBody
+    public ResultBean modify(@RequestBody UserModifyParam userModifyParam) {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            isSuccess = userService.modify(userModifyParam);
+        } catch (BusException e) {
+            logger.error("编辑用户异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("编辑用户异常", e);
             message = "系统异常";
         }
         resultBean.setSuccess(isSuccess);

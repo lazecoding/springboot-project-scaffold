@@ -2,6 +2,7 @@ package lazecoding.project.service.user;
 
 import lazecoding.project.common.entity.User;
 import lazecoding.project.common.exception.BusException;
+import lazecoding.project.common.model.user.UserModifyParam;
 import lazecoding.project.common.util.page.PageParam;
 import lazecoding.project.common.model.user.UserAddParam;
 import lazecoding.project.common.model.user.UserListParam;
@@ -86,7 +87,7 @@ public class UserService {
         user.setPhone(userAddParam.getPhone());
         user.setMail(userAddParam.getMail());
         user.setRoles(userAddParam.getRoles());
-        User addUser = userRepository.save(user);
+        User addUser = this.add(user);
         String uid = addUser.getUid();
         logger.info("新增用户 id:[{}] info:[{}]", uid, JsonUtil.GSON.toJson(addUser));
         return true;
@@ -102,6 +103,57 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
+    /**
+     * 修改用户
+     */
+    public boolean modify(UserModifyParam userModifyParam) {
+        if (userModifyParam == null) {
+            return false;
+        }
+        boolean violations = ValidatorUtil.validate(userModifyParam);
+        if (!violations) {
+            throw new BusException("请求参数校验未通过");
+        }
+        // 检查用户是否存在
+        String uid = userModifyParam.getUid();
+        User modifyUser = this.findByUid(uid);
+        if (modifyUser == null) {
+            throw new BusException("用户不存在");
+        }
+        // 先检查用户名是否重复
+        String uname = userModifyParam.getUname();
+        User existUser = userRepository.findByName(uname);
+        if (existUser != null) {
+            throw new BusException("该用户名已存在");
+        }
+        modifyUser.setUname(uname);
+        modifyUser.setPwd(userModifyParam.getPwd());
+        modifyUser.setPhone(userModifyParam.getPhone());
+        modifyUser.setMail(userModifyParam.getMail());
+        modifyUser.setRoles(userModifyParam.getRoles());
+        User modifyAfterUser = this.modify(modifyUser);
+        logger.info("修改用户 id:[{}] info:[{}]", uid, JsonUtil.GSON.toJson(modifyAfterUser));
+        return true;
+    }
+
+
+
+    /**
+     * 修改用户
+     *
+     * @param user 用户实体
+     */
+    public User modify(User user) {
+        if (user == null) {
+            throw new BusException("用户实体不得为空");
+        }
+        String uid = user.getUid();
+        if (!StringUtils.hasText(uid)) {
+            throw new BusException("用户 Id 不得为空");
+        }
+        return userRepository.save(user);
+    }
 
     /**
      * 用户列表
