@@ -1,6 +1,7 @@
 package lazecoding.project.service.user;
 
 import lazecoding.project.common.constant.CacheConstants;
+import lazecoding.project.common.constant.user.UserStates;
 import lazecoding.project.common.entity.User;
 import lazecoding.project.common.exception.BusException;
 import lazecoding.project.common.model.user.CurrentUser;
@@ -50,6 +51,21 @@ public class LoginService {
         }
         if (!pwd.equals(user.getPwd())) {
             throw new BusException("密码错误");
+        }
+        // 登录校验用户状态
+        int state = user.getState();
+        if (state != UserStates.ACTIVATED) {
+            if (state == UserStates.UNACTIVATED) {
+                throw new BusException("用户未激活");
+            }
+            if (state == UserStates.FREEZING) {
+                throw new BusException("用户已冻结");
+            }
+            if (state == UserStates.CANCELLED) {
+                throw new BusException("用户已注销");
+            }
+            // 如果不合规状态，默认 用户未激活
+            throw new BusException("用户未激活");
         }
         String uid = user.getUid();
         JWTUser jwtUser = new JWTUser(uid, uname);
