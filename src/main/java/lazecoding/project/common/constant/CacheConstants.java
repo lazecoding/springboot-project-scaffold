@@ -12,6 +12,12 @@ public enum CacheConstants {
 
 
     /**
+     * 手机号注册用户
+     * key: phone; value：code
+     */
+    PHONE_REGISTER(ProjectConstants.PROJECT_NAME + ":phone-register:", 60L, TimeUnit.SECONDS),
+
+    /**
      * 用户 token
      * key: token; value：CurrentUser
      */
