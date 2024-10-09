@@ -1,6 +1,7 @@
 package lazecoding.project.controller.user;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,7 +37,7 @@ public class LoginController {
     private LoginService loginService;
 
     /**
-     * 用户登录 http://localhost:9977/sys/login?uname=root&pwd=pwd
+     * 用户登录
      */
     @Operation(summary = "登陆", description = "用户登录")
     @ApiResponse(
@@ -66,6 +67,66 @@ public class LoginController {
         resultBean.setMessage(message);
         return resultBean;
     }
+
+    @Operation(summary = "获取登录验证码", description = "获取登录验证码")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
+    @Parameter(name = "phone", description = "手机号", example = "15011112222", required = true)
+    @PostMapping(value = "phone-login-sms")
+    @ResponseBody
+    public ResultBean phoneLoginSms(String phone) {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            isSuccess = loginService.phoneLoginSms(phone);
+        } catch (BusException e) {
+            logger.error("获取登录验证码异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("获取登录验证码异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+
+    /**
+     * 手机登陆
+     */
+    @Operation(summary = "手机登陆", description = "手机登陆")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
+    @PostMapping(value = "phone-login-do")
+    @ResponseBody
+    public ResultBean phoneLoginDo(String phone, String code, HttpServletResponse httpServletResponse) {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            LoginVo loginVo = loginService.phoneLoginDo(phone, code);
+            if (loginVo != null) {
+                isSuccess = true;
+                httpServletResponse.addCookie(JWTOperator.getLoginCookie(loginVo.getAccessToken()));
+            }
+        } catch (BusException e) {
+            logger.error("手机登陆异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("手机登陆异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
 
     /**
      * 用户登出 http://localhost:9977/sys/logout

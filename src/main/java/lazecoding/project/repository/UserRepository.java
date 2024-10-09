@@ -26,6 +26,16 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query("SELECT u FROM User u WHERE u.uname = ?1 ")
     User findByName(String uname);
 
+
+    /**
+     * 根据手机号查询用户
+     *
+     * @param phone 手机号
+     */
+    @Query("SELECT u FROM User u WHERE u.phone = ?1 ")
+    User findByPhone(String phone);
+
+
     /**
      * 根据状态查询用户列表
      *

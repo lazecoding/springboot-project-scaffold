@@ -12,6 +12,12 @@ public enum CacheConstants {
 
 
     /**
+     * 手机号登录用户
+     * key: phone; value：code
+     */
+    PHONE_LOGIN(ProjectConstants.PROJECT_NAME + ":phone-login:", 60L, TimeUnit.SECONDS),
+
+    /**
      * 手机号注册用户
      * key: phone; value：code
      */

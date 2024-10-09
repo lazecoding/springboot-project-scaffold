@@ -30,6 +30,7 @@ public class LoginService {
     @Autowired
     private UserService userService;
 
+
     /**
      * 登录
      */
@@ -52,6 +53,60 @@ public class LoginService {
         if (!pwd.equals(user.getPwd())) {
             throw new BusException("密码错误");
         }
+        return loginCommonHandler(user);
+    }
+
+
+    /**
+     * 获取登录验证码
+     *
+     * @param phone 手机号
+     */
+    public boolean phoneLoginSms(String phone) {
+        // 为手机号生成验证码并存储到缓存
+        String code = "1234";
+        boolean isSuccess = CacheOperator.set(CacheConstants.PHONE_LOGIN.getCacheKey(phone), code, 60);
+        if (isSuccess) {
+            // TODO 发送短信
+        } else {
+            logger.error("验证码缓存失败 phone:[{}]", phone);
+        }
+        return isSuccess;
+    }
+
+
+    /**
+     * 手机登录
+     */
+    public LoginVo phoneLoginDo(String phone, String code) {
+        // 校验参数
+        if (!StringUtils.hasText(phone)) {
+            throw new BusException("手机号为空");
+        }
+        if (!StringUtils.hasText(code)) {
+            throw new BusException("验证码为空");
+        }
+        // 检验验证码
+        // 通过手机号校验验证码
+        String beforeCode = CacheOperator.get(CacheConstants.PHONE_LOGIN.getCacheKey(phone));
+        if (!StringUtils.hasText(beforeCode)) {
+            throw new BusException("验证码不存在");
+        }
+        if (!beforeCode.equals(code)) {
+            throw new BusException("验证码错误");
+        }
+        User user = userService.findByPhone(phone);
+        if (user == null) {
+            throw new BusException("用户不存在");
+        }
+        return loginCommonHandler(user);
+    }
+
+
+    /**
+     * 登录通用处理
+     */
+    public LoginVo loginCommonHandler(User user) {
         // 登录校验用户状态
         int state = user.getState();
         if (state != UserStates.ACTIVATED) {
@@ -68,6 +123,7 @@ public class LoginService {
             throw new BusException("用户未激活");
         }
         String uid = user.getUid();
+        String uname = user.getUname();
         JWTUser jwtUser = new JWTUser(uid, uname);
         String accessToken = JWTOperator.createAccessToken(jwtUser);
         if (!StringUtils.hasText(accessToken)) {

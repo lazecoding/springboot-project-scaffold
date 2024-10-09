@@ -66,6 +66,19 @@ public class UserService {
     }
 
     /**
+     * 根据手机号查询用户
+     *
+     * @param phone 手机号
+     */
+    public User findByPhone(String phone) {
+        if (!StringUtils.hasText(phone)) {
+            return null;
+        }
+        return userRepository.findByPhone(phone);
+    }
+
+
+    /**
      * 新增用户
      */
     public boolean add(UserAddParam userAddParam) {
