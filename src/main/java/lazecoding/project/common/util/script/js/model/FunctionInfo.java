@@ -1,8 +1,6 @@
 package lazecoding.project.common.util.script.js.model;
 
-import lazecoding.project.common.util.script.js.function.FunctionGroups;
 import lazecoding.project.common.util.script.js.function.Functions;
-
 import java.io.Serializable;
 
 /**
@@ -29,13 +27,6 @@ public class FunctionInfo implements Serializable {
      */
     private String group;
 
-
-    /**
-     * 分组
-     */
-    private String groupName;
-
-
     /**
      * 描述，形如：返回其参数列表中第一个非空值\n:param args: 任意数量的参数\n:return: 第一个非空值
      */
@@ -48,7 +39,6 @@ public class FunctionInfo implements Serializable {
         this.name = function.getName();
         this.alias = function.getAlias();
         this.group = function.getGroup();
-        this.groupName = FunctionGroups.COLLECTION.getNameByGroup(function.getGroup());
         this.description = function.getDescription();
     }
 
@@ -74,14 +64,6 @@ public class FunctionInfo implements Serializable {
 
     public void setGroup(String group) {
         this.group = group;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
     }
 
     public String getDescription() {

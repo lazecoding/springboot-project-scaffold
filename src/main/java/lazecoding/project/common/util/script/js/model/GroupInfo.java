@@ -1,8 +1,10 @@
 package lazecoding.project.common.util.script.js.model;
 
 import lazecoding.project.common.util.script.js.function.FunctionGroups;
-
+import lazecoding.project.common.util.script.js.function.Functions;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 分组信息
@@ -24,12 +26,20 @@ public class GroupInfo implements Serializable {
      */
     private String name;
 
+
+    private List<FunctionInfo> functions;
+
+
     public GroupInfo() {
     }
 
     public GroupInfo(FunctionGroups functionGroup) {
         this.group = functionGroup.getGroup();
         this.name = functionGroup.getName();
+        this.functions = new ArrayList<>();
+        for (Functions function : Functions.values()) {
+            this.functions.add(new FunctionInfo(function));
+        }
     }
 
     public String getGroup() {
@@ -46,5 +56,13 @@ public class GroupInfo implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<FunctionInfo> getFunctions() {
+        return functions;
+    }
+
+    public void setFunctions(List<FunctionInfo> functions) {
+        this.functions = functions;
     }
 }
