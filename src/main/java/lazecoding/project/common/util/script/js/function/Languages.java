@@ -1,4 +1,4 @@
-package lazecoding.project.common.util.script.js;
+package lazecoding.project.common.util.script.js.function;
 
 /**
  * 语言

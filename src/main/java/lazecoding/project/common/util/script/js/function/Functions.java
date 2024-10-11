@@ -1,7 +1,5 @@
 package lazecoding.project.common.util.script.js.function;
 
-import lazecoding.project.common.util.script.js.Languages;
-
 /**
  * 定义函数
 
@@ -393,15 +391,6 @@ public enum Functions {
         this.language = language;
         this.script = script;
         this.description = description;
-    }
-
-    Functions(String name, String alias, String group, String script, String description) {
-        this.name = name;
-        this.alias = alias;
-        this.group = group;
-        this.script = script;
-        this.description = description;
-        this.language = Languages.JS;
     }
 
     public String getName() {

@@ -3,6 +3,7 @@ package lazecoding.project.common.util.script.js;
 import lazecoding.project.common.util.JsonUtil;
 import lazecoding.project.common.util.script.js.function.Functions;
 import lazecoding.project.common.util.script.js.function.JavaImplFunctions;
+import lazecoding.project.common.util.script.js.function.Languages;
 import lazecoding.project.common.util.script.js.model.FunctionHolder;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
@@ -73,11 +74,14 @@ public class ScriptExecutor {
             Value value = context.asValue(javaImplFunctions);
             Value bindings = context.getBindings(LANGUAGE_ID);
             for (Functions function : functions) {
-                if (function.getLanguage().equals(Languages.JS)) {
-                    context.eval(LANGUAGE_ID, function.getScript());
-                }
-                if (function.getLanguage().equals(Languages.JAVA)) {
-                    bindings.putMember(function.getName(), value.getMember(function.getScript()));
+                String functionName = function.name();
+                if (script.contains(functionName)) {
+                    if (function.getLanguage().equals(Languages.JS)) {
+                        context.eval(LANGUAGE_ID, function.getScript());
+                    }
+                    if (function.getLanguage().equals(Languages.JAVA)) {
+                        bindings.putMember(function.getName(), value.getMember(function.getScript()));
+                    }
                 }
             }
             // 获取 JavaScript 的命名空间，用于定义变量
