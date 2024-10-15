@@ -20,6 +20,11 @@ public enum FunctionGroups {
     COLLECTION("Collection", "集合函数"),
 
     /**
+     * 逻辑函数
+     */
+    LOGIC("Logic", "逻辑函数"),
+
+    /**
      * 日期函数
      */
     DATE("Date", "日期函数"),

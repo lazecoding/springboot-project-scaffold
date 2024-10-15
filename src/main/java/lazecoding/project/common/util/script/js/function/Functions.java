@@ -2,12 +2,10 @@ package lazecoding.project.common.util.script.js.function;
 
 /**
  * 定义函数
-
  * MD5
  *
- * @author lazecoding
+ * @author liux
  */
-
 public enum Functions {
 
     // Math 数学函数
@@ -15,7 +13,9 @@ public enum Functions {
             "function ABS(number) {\n" +
                     "  return Math.abs(number);\n" +
                     "}",
-            "返回数的绝对值"),
+            "ABS(number) 返回数字的绝对值\n" +
+                    "用法：ABS(-123.456)\n" +
+                    "示例：ABS(-123.456) 的结果为123.456"),
     AVERAGE("AVERAGE", "平均值", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function AVERAGE(...numbers) {\n" +
                     "  let sum = 0;\n" +
@@ -24,38 +24,52 @@ public enum Functions {
                     "  }\n" +
                     "  return sum / numbers.length;\n" +
                     "}",
-            "计算平均值"),
+            "AVERAGE(number1, number2, ...) 求数字的平均值\n" +
+                    "用法：AVERAGE(1,2)\n" +
+                    "示例：AVERAGE(1,2) 的结果为 1.5"),
     FIXED("FIXED", "固定小数位数", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function FIXED(number, decimalPlaces) {\n" +
                     "  const factor = Math.pow(10, decimalPlaces);\n" +
                     "  return Math.floor(number * factor) / factor;\n" +
                     "}",
-            "格式化数值为固定小数位数的文本"),
+            "FIXED(number) 将数字向下舍入到指定的小数位数。\n" +
+                    "用法：FIXED(10.8963, 2)\n" +
+                    "示例：FIXED(10.8963, 2) 返回的结果是10.89"),
     INT("INT", "整数部分", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function INT(number) {\n" +
                     "  return Math.floor(number);\n" +
                     "}",
-            "返回数的整数部分"),
+            "INT(number)将数字向下舍入到最接近的整数。\n" +
+                    "用法：INT(3.45)\n" +
+                    "示例：INT(3.45) 返回3；INT(-3.45) 返回-4"),
     MAX("MAX", "最大值", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function MAX(...numbers) {\n" +
                     "  return Math.max(...numbers);\n" +
                     "}",
-            "返回最大值"),
+            "MAX(number1, number2, ...) 获取这组数字中的最大值。\n" +
+                    "用法：MAX(1, 4, 6.7, 10, 2)\n" +
+                    "示例：MAX(1, 4, 6.7, 10, 2) 返回10"),
     MIN("MIN", "最小值", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function MIN(...numbers) {\n" +
                     "  return Math.min(...numbers);\n" +
                     "}",
-            "返回最小值"),
+            "MIN(number1, number2, ...) 返回数组中的最小值。\n" +
+                    "用法：MIN(1, 3, 5, 7, 2, 4)\n" +
+                    "示例：MIN(1, 3, 5, 7, 2, 4) 返回1"),
     SUM("SUM", "求和", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function SUM(...numbers) {\n" +
                     "  return numbers.reduce((sum, number) => sum + number, 0);\n" +
                     "}",
-            "计算数值的总和"),
+            "SUM(number1, number2...) 函数将所有参数求和并返回。集合参数会被自动展开成多个参数\n" +
+                    "用法：SUM(1.23, 1.45, 100)\n" +
+                    "示例：SUM(1.23, 1.45, 100) 返回102.68; SUM(LIST(1,2,3,4,5)) 的结果是 15"),
     POWER("POWER", "乘方", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function POWER(number, power) {\n" +
                     "  return number ** power;\n" +
                     "}",
-            "返回数的指定次方"),
+            "POWER(number, power) 返回数字乘幂的结果。\n" +
+                    "用法：POWER(2, 2)\n" +
+                    "示例：POWER(2, 2) 的结果是 4。"),
     PRODUCT("PRODUCT", "乘积", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function PRODUCT(...numbers) {\n" +
                     "  return numbers.reduce((product, number) => product * number, 1);\n" +
@@ -66,48 +80,66 @@ public enum Functions {
                     "  const factor = Math.pow(10, numDigits);\n" +
                     "  return Math.round(number * factor) / factor;\n" +
                     "}",
-            "将数四舍五入到指定的位数"),
+            "ROUND(number, numDigits) 将数字四舍五入到指定的位数。\n" +
+                    "用法：ROUND(1.2345, 2)\n" +
+                    "示例：ROUND(1.2345, 2) 返回1.23；ROUND(12345, 2) 返回12345"),
     RAND("RAND", "随机数", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function RAND() {\n" +
                     "  return Math.random();\n" +
                     "}",
-            "生成随机数"),
+            "RAND() 返回大于等于 0 且小于 1 的均匀分布随机实数。每一次触发计算都会变化。\n" +
+                    "用法：RAND() 的结果是 0.601931207820683。\n" +
+                    "示例：RAND() 的结果是 0.601931207820683。"),
     PI("PI", "圆周率", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function PI() {\n" +
                     "  return Math.PI;\n" +
                     "}",
-            "返回 π 的值"),
+            "PI() 返回圆周率3.14159265358979323846。\n" +
+                    "用法：PI() * POWER(r, 2)\n" +
+                    "示例：计算半径长为r的圆的面积 PI() * POWER(r, 2) 如果r=1，那么返回3.14159265358979323846"),
     MOD("MOD", "求余", FunctionGroups.MATH.getGroup(), Languages.JS,
             "function MOD(number, divisor) {\n" +
                     "  return number % divisor;\n" +
                     "}",
-            "返回除法余数"),
+            "MOD(number, divisor) 返回两数相除的余数。\n" +
+                    "用法：MOD(37, 6)\n" +
+                    "示例：MOD(37, 6) 返回值为1"),
     // String 字符串函数
     CONTAIN("CONTAIN", "包含", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function CONTAIN(text1, text2) {\n" +
                     "  return text1.includes(text2);\n" +
                     "}",
-            "检查一个字符串是否包含另一个字符串"),
+            "CONTAIN(text1, text2) 判断 text1 是否包含 text2。\n" +
+                    "用法：CONTAIN('text1', 'text')\n" +
+                    "示例：CONTAIN('text1', 'text') 的结果为 true。"),
     EXACT("EXACT", "完全匹配", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function EXACT(text1, text2) {\n" +
                     "  return text1 === text2;\n" +
                     "}",
-            "检查两个字符串是否完全相同"),
+            "EXACT(text1, text2) 判断字符串是否完全相等，如果相等，则返回true，如果不相等，则返回false，区分大小写。\n" +
+                    "用法：EXACT('abc', 'Abc')\n" +
+                    "示例：EXACT('abc', 'Abc') 返回false。"),
     LEN("LEN", "长度", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function LEN(text) {\n" +
                     "  return text.length;\n" +
                     "}",
-            "返回字符串的长度"),
+            "LEN(text) 返回字符串长度。\n" +
+                    "用法：LEN('abc')\n" +
+                    "示例：LEN('abc') 的结果为 3"),
     LOWER("LOWER", "小写", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function LOWER(text) {\n" +
                     "  return text.toLowerCase();\n" +
                     "}",
-            "将字符串转换为小写"),
+            "LOWER(text) 将参数中的所有字母转换成小写字母返回。\n" +
+                    "用法：LOWER('AbCd')\n" +
+                    "示例：LOWER('AbCd') 的结果是 'abcd'"),
     UPPER("UPPER", "大写", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function LOWER(text) {\n" +
                     "  return text.toUpperCase();\n" +
                     "}",
-            "将字符串转换为大写"),
+            "UPPER(text) 将文本字符串中的所有小写字母转换成大写字母。\n" +
+                    "用法：UPPER('AbCd')\n" +
+                    "示例：UPPER('AbCd') 返回结果是 'ABCD'。"),
     REPLACE("REPLACE", "替换文本", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function REPLACE(oldText, startNum, numChars, newText) {\n" +
                     "  if (startNum < 1 || startNum > oldText.length) {\n" +
@@ -117,54 +149,76 @@ public enum Functions {
                     "  const end = start + numChars;\n" +
                     "  return oldText.substring(0, start) + newText + oldText.substring(end);\n" +
                     "}",
-            "在字符串中替换文本"),
+            "REPLACE(oldText, startNum, numChars, newText) 将oldText的从startNum开始的numChars个字符替换成newText,startNum从1开始。\n" +
+                    "用法：REPLACE('12345678', 2, 3, 'ABCD')\n" +
+                    "示例：REPLACE('12345678', 2, 3, 'ABCD') 结果是1ABCD5678"),
     TEXTREPLACE("REPLACE", "文本替换", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function TEXTREPLACE(text, search, replacement) {\n" +
                     "  return text.replace(new RegExp(search, 'g'), replacement);\n" +
                     "}",
-            "在字符串中查找并替换文本"),
-    SPLIT("SPLIT", "分割", FunctionGroups.STRING.getGroup(), Languages.JS,
-            "function SPLIT(text, textSeparator) {\n" +
-                    "  return text.split(textSeparator);\n" +
-                    "}",
-            "根据指定的分隔符分割字符串"),
+            "TEXTREPLACE(string, string, string) 将参数1里与参数2相匹配的字符替换成参数3\n" +
+                    "用法：TEXTREPLACE('ABBC','B','b')\n" +
+                    "示例：TEXTREPLACE('ABBC','B','b') 返回的结果是 'AbbC'"),
+    SPLIT("SPLIT", "分割", FunctionGroups.STRING.getGroup(), Languages.JAVA,
+            "split",
+            "SPLIT(text, textSeparator) 将字符串分割。\n" +
+                    "用法：SPLIT('ABABAB', 'B')\n" +
+                    "示例：SPLIT('ABABAB', 'B') 的结果为 LIST('A','A','A')。"),
     STARTWITH("STARTWITH", "以开始", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function STARTWITH(text1, text2) {\n" +
                     "  return text1.startsWith(text2);\n" +
                     "}",
-            "检查字符串是否以特定文本开始"),
+            "STARTWITH(text1, text2) 判断文本字符串是否以特定字符串开始。\n" +
+                    "用法：STARTWITH('ABCDEF', 'ABC')\n" +
+                    "示例：STARTWITH('ABCDEF', 'ABC') 返回true。"),
     TRIM("TRIM", "去空格", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function TRIM(text) {\n" +
                     "  return text.trim();\n" +
                     "}",
-            "移除字符串两端的空白字符"),
+            "TRIM(text) 删除字符串首尾的空格。\n" +
+                    "用法：TRIM(' ABCD ')\n" +
+                    "示例：TRIM(' ABCD ') 返回的结果是 'ABCD'。"),
     JOIN("JOIN", "连接", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function JOIN(delimiter, ...args) {\n" +
                     " return args.join(delimiter);\n" +
                     "}",
-            "将多个字符串元素联合成一个字符串"),
+            "JOIN(delimiter, list) 将数组列表转换为由delimiter分割的字符串\n" +
+                    "用法：GET(',', LIST(1,2,3))\n" +
+                    "示例：GET(',', LIST(1,2,3)) 返回的结果是 '1,2,3'"),
     NUMBERTOSTRING("NUMBERTOSTRING", "数值转字符串", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function NUMBERTOSTRING(number) {\n" +
                     "  return number.toString();\n" +
                     "}",
-            "数值转字符串"),
+            "数值转字符串\n" +
+                    "用法：NUMBERTOSTRING(1)\n" +
+                    "示例：NUMBERTOSTRING(1) 返回的结果是 '1'。"),
     STRINGTONUMBER("STRINGTONUMBER", "字符串转数值", FunctionGroups.STRING.getGroup(), Languages.JS,
             "function STRINGTONUMBER(string) {\n" +
                     "  return Number(string);\n" +
                     "}",
-            "字符串转数值"),
+            "字符串转数值\n"  +
+                    "用法：NUMBERTOSTRING('1')\n" +
+                    "示例：NUMBERTOSTRING('1') 返回的结果是 1。"),
     GETUUID("GETUUID", "获取UUID", FunctionGroups.STRING.getGroup(), Languages.JAVA,
             "getUuid",
-            "获取UUID"),
+            "获取标准 UUID。\n" +
+                    "用法：GETUUID()\n" +
+                    "示例：GETUUID() 返回的结果是 '59ce2443-5dbd-4933-bf9d-93e2cde545a9'。"),
     GETSIMPLEUUID("GETSIMPLEUUID", "获取简明UUID", FunctionGroups.STRING.getGroup(), Languages.JAVA,
             "getSimpleUuid",
-            "获取简明UUID"),
+            "获取简明 UUID，即去除 '-'。\n" +
+                    "用法：GETUUID()\n" +
+                    "示例：GETUUID() 返回的结果是 '59ce24435dbd4933bf9d93e2cde545a9'。"),
     MD5("MD5", "MD5", FunctionGroups.STRING.getGroup(), Languages.JAVA,
             "md5",
-            "MD5"),
+            "获取 MD5 值。\n" +
+                    "用法：MD5('111')\n" +
+                    "示例：MD5('111') 返回的结果是 '698d51a19d8a121ce581499d7b701668'。"),
     SM3("SM3", "SM3", FunctionGroups.STRING.getGroup(), Languages.JAVA,
             "sm3",
-            "SM3"),
+            "获取 SM3 值。\n" +
+                    "用法：SM3('111')\n" +
+                    "示例：SM3('111') 返回的结果是 '6df72957d3b4d3c585b4f3ff3e04565fbe4750915f79954106a2b3789e676fc0'。"),
     // JSON
     GET("GET", "获取某个路径的值", FunctionGroups.JSON.getGroup(), Languages.JS,
             "function GET(jsonPath, jsonObj) {\n" +
@@ -198,6 +252,9 @@ public enum Functions {
             "字符串转 JSON"),
 
     // 日期
+    NOW("NOW", "当前时间戳", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "currentTimeMillis",
+            "获取当前时间戳"),
     DATE("DATE", "DATE", FunctionGroups.DATE.getGroup(), Languages.JS,
             "function DATE(value) {\n" +
                     "  if (typeof value === 'string') {\n" +
@@ -233,9 +290,6 @@ public enum Functions {
                     "    .replace('ss', second);\n" +
                     "}",
             "DATEFORMAT(date,format) 将日期格式化为指定类型"),
-    NOW("NOW", "当前时间", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "",
-            ""),
     YEAR("YEAR", "获取年份", FunctionGroups.DATE.getGroup(), Languages.JS,
             "function YEAR(date) {\n" +
                     "  // 如果date是一个日期对象，直接使用它\n" +
@@ -351,6 +405,57 @@ public enum Functions {
                     "}",
             "获取时间/时间字符/时间戳秒"),
 
+    // Collection
+    IN("IN", "存在", FunctionGroups.COLLECTION.getGroup(), Languages.JS,
+            "function IN(ele, collection) {\n" +
+                    "    return collection.includes(ele);\n" +
+                    "}\n",
+            "IN(ele,collection) 判断元素是否位于集合中\n" +
+                    "用法：IN('选项 1', LIST('选项 1','选项 2'))\n" +
+                    "示例：IN('选项 1', LIST('选项 1','选项 2')) 的结果为 true"),
+    INTER("INTER", "交集", FunctionGroups.COLLECTION.getGroup(), Languages.JAVA,
+            "listInter",
+            "INTER(collection1,collection2) 计算两个集合的交集\n" +
+                    "用法：INTER(LIST(1,2,3),LIST(2,3,5,6))\n" +
+                    "示例：INTER(LIST(1,2,3),LIST(2,3,5,6)) 的结果是 LIST(2,3)"),
+    UNION("UNION", "并集", FunctionGroups.COLLECTION.getGroup(), Languages.JAVA,
+            "listUnion",
+            "UNION(collection1,collection2) 计算两个集合的并集\n" +
+                    "用法：UNION(LIST(1,2),LIST(3,4))\n" +
+                    "示例：UNION(LIST(1,2),LIST(3,4)) 的结果是 LIST(1,2,3,4)"),
+    LIST("LIST", "创建列表", FunctionGroups.COLLECTION.getGroup(), Languages.JAVA,
+            "initList",
+            "LIST(ele1, ele2, ...) 生成一个由 ele1 ele2 ... 组成的集合\n" +
+                    "用法：LIST('选项1','选项2')\n" +
+                    "示例：LIST('选项1','选项2')"),
+    INDEXVALUE("INDEXVALUE", "指定索引的值", FunctionGroups.COLLECTION.getGroup(), Languages.JAVA,
+            "indexValue",
+            "INDEXVALUE(list,index) 获取 list index 位置的元素,下标从 0 开始\n" +
+                    "用法：INDEXVALUE(LIST(1,2,3),1)\n" +
+                    "示例：INDEXVALUE(LIST(1,2,3),2) 的结果为 2"),
+    LISTSIZE("LISTSIZE", "元素个数", FunctionGroups.COLLECTION.getGroup(), Languages.JAVA,
+            "listSize",
+            "LISTSIZE(list) 返回集合的大小\n" +
+                    "用法：LISTSIZE(LIST(1,2,3))\n" +
+                    "示例：LISTSIZE(LIST(1,2,3)) 的结果为 3"),
+
+    // Logic
+    IF("IF", "如果", FunctionGroups.LOGIC.getGroup(), Languages.JS,
+            "function IF(logic, value1, value2) {\n" +
+                    "    return logic ? value1 : value2;\n" +
+                    "}",
+            "IF(logic, value1, value2) 如果logic为true，则返回value1， 否则返回value2\n" +
+                    "用法：IF(70>=60, '及格', '不及格')\n" +
+                    "示例：IF(70>=60, '及格', '不及格') 的结果是 及格"
+    ),
+    EQ("EQ", "等于", FunctionGroups.LOGIC.getGroup(), Languages.JS,
+            "function EQ(value1, value2) {\n" +
+                    "    return value1 === value2;\n" +
+                    "}",
+            "EQ(value1, value2),如果value1和value2的值相等，则为true，否则为false\n" +
+                    "用法：EQ('aa', 'aa')\n" +
+                    "示例：EQ('aa', 'aa') 和 EQ(1,1) 的结果为 true"
+    ),
 
     ;
 
@@ -391,6 +496,15 @@ public enum Functions {
         this.language = language;
         this.script = script;
         this.description = description;
+    }
+
+    Functions(String name, String alias, String group, String script, String description) {
+        this.name = name;
+        this.alias = alias;
+        this.group = group;
+        this.script = script;
+        this.description = description;
+        this.language = Languages.JS;
     }
 
     public String getName() {
