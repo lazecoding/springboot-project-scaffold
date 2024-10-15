@@ -188,6 +188,9 @@ public class UserService {
         return true;
     }
 
+    // TODO 激活用户
+
+    // TODO 注销用户
 
     /**
      * 冻结用户
