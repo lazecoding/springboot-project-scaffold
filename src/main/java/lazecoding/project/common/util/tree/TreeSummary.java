@@ -1,10 +1,6 @@
 package lazecoding.project.common.util.tree;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 树节点汇总计算
@@ -33,9 +29,9 @@ public class TreeSummary {
             }
             childMap.get(pid).add(node);
         }
-        // 根据层级排序 key pid, value 子节点
-        Map<String, List<Node>> softMap = new LinkedHashMap<>();
-        recursion(rootId, childMap, softMap);
+        // 维护 nodeId 序列
+        List<String> nodeOrder = new ArrayList<>();
+        recursion(rootId, childMap, nodeOrder);
         // 存储根据 id 存储每个 node
         Map<String, Node> nodeMap = new HashMap<>();
         for (Node node : nodes) {
@@ -47,12 +43,11 @@ public class TreeSummary {
             nodes.add(root);
             nodeMap.put(rootId, root);
         }
-        // 对 softMap 倒序遍历
-        List<String> keys = new ArrayList<>(softMap.keySet());
-        for (int i = keys.size() - 1; i >= 0; i--) {
-            String id = keys.get(i);
-            Node node = nodeMap.get(id);
-            List<Node> childNodes = softMap.get(id);
+        // 倒序
+        Collections.reverse(nodeOrder);
+        for (String nodeId : nodeOrder) {
+            Node node = nodeMap.get(nodeId);
+            List<Node> childNodes = childMap.get(nodeId);
             long count = node.getValue();
             if (childNodes != null && !childNodes.isEmpty()) {
                 for (Node child : childNodes) {
@@ -67,13 +62,12 @@ public class TreeSummary {
     /**
      * 递归
      */
-    public static void recursion(String pid, Map<String, List<Node>> childMap, Map<String, List<Node>> softMap) {
+    public static void recursion(String pid, Map<String, List<Node>> childMap, List<String> nodeOrder) {
         List<Node> childNodes = childMap.get(pid);
-        softMap.put(pid, childNodes);
+        nodeOrder.add(pid);
         if (childNodes != null && !childNodes.isEmpty()) {
-            softMap.put(pid, childNodes);
             for (Node node : childNodes) {
-                recursion(node.getId(), childMap, softMap);
+                recursion(node.getId(), childMap, nodeOrder);
             }
         }
     }
