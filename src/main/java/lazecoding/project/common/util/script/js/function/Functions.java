@@ -134,7 +134,7 @@ public enum Functions {
                     "用法：LOWER('AbCd')\n" +
                     "示例：LOWER('AbCd') 的结果是 'abcd'"),
     UPPER("UPPER", "大写", FunctionGroups.STRING.getGroup(), Languages.JS,
-            "function LOWER(text) {\n" +
+            "function UPPER(text) {\n" +
                     "  return text.toUpperCase();\n" +
                     "}",
             "UPPER(text) 将文本字符串中的所有小写字母转换成大写字母。\n" +
