@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 断续器
@@ -75,7 +76,7 @@ public class Interruptor {
      * 获取 holder 缓存 Key
      */
 
-    private static String getHolderKey(String taskId) {
+    private static String getHolderKey() {
         return HOLDER_CACHE_HEAD + HOLDER_CACHE_NAME;
     }
 
@@ -99,8 +100,8 @@ public class Interruptor {
             return false;
         }
         RedissonOperator.set(getTaskKey(taskId), taskInfo, TASK_TTL);
-        // TODO MAP 设置 key
-        return false;
+        RedissonOperator.mapPut(getHolderKey(), taskId , taskInfo);
+        return true;
     }
 
 
@@ -145,8 +146,7 @@ public class Interruptor {
             return false;
         }
         // 取消任务先取消 holder 缓存
-        // TODO MAP 删除 key
-        boolean isSuccess = true;
+        boolean isSuccess = RedissonOperator.mapRemove(getHolderKey(), taskId);
         if (isSuccess) {
             RedissonOperator.delete(getTaskKey(taskId));
         }
@@ -212,8 +212,7 @@ public class Interruptor {
         if (!StringUtils.hasText(taskId)) {
             return null;
         }
-        // TODO MAP 获取 task
-        return null;
+        return RedissonOperator.mapGet(getHolderKey(), taskId);
     }
 
 
@@ -223,8 +222,7 @@ public class Interruptor {
     public static List<TaskInfo> findAllTask() {
         List<TaskInfo> tasks = new ArrayList<>();
         List<String> errorTaskIds = new ArrayList<>();
-        // TODO MAP 获取全部 key
-        List<String> taskIds = null;
+        Set<String> taskIds = RedissonOperator.mapKeys(getHolderKey());
         if (!CollectionUtils.isEmpty(taskIds)) {
             for (String taskId : taskIds) {
                 TaskInfo taskInfo = findTask(taskId);
@@ -253,8 +251,7 @@ public class Interruptor {
     public static List<TaskInfo> findInterruptTasks() {
         List<TaskInfo> tasks = new ArrayList<>();
         List<String> errorTaskIds = new ArrayList<>();
-        // TODO MAP 获取全部 key
-        List<String> taskIds = null;
+        Set<String> taskIds = RedissonOperator.mapKeys(getHolderKey());
         if (!CollectionUtils.isEmpty(taskIds)) {
             for (String taskId : taskIds) {
                 TaskInfo taskInfo = RedissonOperator.get(getTaskKey(taskId));
