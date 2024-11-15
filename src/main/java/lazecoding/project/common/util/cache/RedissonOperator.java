@@ -1,11 +1,13 @@
 package lazecoding.project.common.util.cache;
 
+import org.checkerframework.checker.units.qual.K;
 import org.redisson.api.RAtomicLong;
 import org.redisson.api.RBucket;
 import org.redisson.api.RBuckets;
+import org.redisson.api.RMap;
 import org.springframework.util.StringUtils;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -174,6 +176,97 @@ public class RedissonOperator {
     public static long decr(String key, long step) {
         return incr(key, Math.negateExact(step));
     }
+
+    /**
+     * 设置值,如果具有指定键的映射项已经存在，则返回先前的值，新键返回 null
+     */
+    public static <K, V> V mapPut(String key, K item, V value) {
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.put(item, value);
+    }
+
+    /**
+     * 设置值,仅当之前没有存储带有指定键的值时，才存储按键映射的指定值。
+     */
+    public static <K, V> V mapPutIfAbsent(String key, K item, V value) {
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.putIfAbsent(item, value);
+    }
+
+
+    /**
+     * 设置值,仅当映射已经存在时，才存储按键映射的指定值。
+     */
+    public static <K, V> V mapPutIfExists(String key, K item, V value) {
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.putIfExists(item, value);
+    }
+
+    /**
+     * 获取 Map 指定键
+     */
+    public static <K, V> V mapGet(String key, K item) {
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.get(item);
+    }
+
+    /**
+     * 移除 Map 指定键
+     */
+    public static <K, V> V mapRemove(String key, K item) {
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.remove(item);
+    }
+
+    /**
+     * 批量移除 Map 指定键
+     */
+    public static <K, V> long mapRemove(String key, K... items) {
+        if (items == null || items.length == 0) {
+            return 0L;
+        }
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.fastRemove(items);
+    }
+
+    /**
+     * 获取 Map 全部键
+     */
+    public static <K, V> Set<K> mapKeys(String key) {
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.keySet();
+    }
+
+    /**
+     * 根据规则获取 Map 键
+     */
+    public static <K, V> Set<K> mapKeys(String key, String pattern) {
+        if (!StringUtils.hasText(pattern)) {
+            return null;
+        }
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.keySet(pattern);
+    }
+
+    /**
+     * 获取 Map 全部值
+     */
+    public static <K, V> Collection<V> mapValues(String key) {
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.values();
+    }
+
+    /**
+     * 根据规则获取 Map 值
+     */
+    public static <K, V> Collection<V> mapValues(String key, String pattern) {
+        if (!StringUtils.hasText(pattern)) {
+            return null;
+        }
+        RMap<K, V> rMap = RedissonClientUtil.getRedissonClient().getMap(key);
+        return rMap.values(pattern);
+    }
+
 
     /**
      * 私有，禁止实例化
