@@ -148,11 +148,10 @@ public class UserService {
         modifyUser.setPhone(userModifyParam.getPhone());
         modifyUser.setMail(userModifyParam.getMail());
         modifyUser.setRoles(userModifyParam.getRoles());
-        User modifyAfterUser = this.modify(modifyUser);
-        logger.info("修改用户 id:[{}] info:[{}]", uid, JsonUtil.GSON.toJson(modifyAfterUser));
-        return true;
+        boolean isSuccess = this.modify(modifyUser);
+        logger.info("修改用户 id:[{}] isSuccess:[{}] info:[{}]", uid, isSuccess, JsonUtil.GSON.toJson(modifyUser));
+        return isSuccess;
     }
-
 
 
     /**
@@ -160,7 +159,7 @@ public class UserService {
      *
      * @param user 用户实体
      */
-    public User modify(User user) {
+    public boolean modify(User user) {
         if (user == null) {
             throw new BusException("用户实体不得为空");
         }
@@ -168,7 +167,12 @@ public class UserService {
         if (!StringUtils.hasText(uid)) {
             throw new BusException("用户 Id 不得为空");
         }
-        return userRepository.save(user);
+        try {
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -188,9 +192,66 @@ public class UserService {
         return true;
     }
 
-    // TODO 激活用户
+    /**
+     * 激活用户
+     */
+    public boolean activate(String uid) {
+        if (!StringUtils.hasText(uid)) {
+            return false;
+        }
+        User user = this.findByUid(uid);
+        if (user == null) {
+            throw new BusException("用户不存在");
+        }
+        return this.activate(user);
+    }
 
-    // TODO 注销用户
+
+    /**
+     * 激活用户
+     */
+    public boolean activate(User user) {
+        if (user == null) {
+            return false;
+        }
+        if (UserStates.ACTIVATED == user.getState()) {
+            return true;
+        }
+        user.setState(UserStates.ACTIVATED);
+        boolean isSuccess = this.modify(user);
+        logger.info("激活用户 isSuccess:[{}] info:[{}]", isSuccess, JsonUtil.GSON.toJson(user));
+        return isSuccess;
+    }
+
+    /**
+     * 注销用户
+     */
+    public boolean cancel(String uid) {
+        if (!StringUtils.hasText(uid)) {
+            return false;
+        }
+        User user = this.findByUid(uid);
+        if (user == null) {
+            throw new BusException("用户不存在");
+        }
+        return this.cancel(user);
+    }
+
+    /**
+     * 注销用户
+     */
+    public boolean cancel(User user) {
+        if (user == null) {
+            return false;
+        }
+        if (UserStates.CANCELLED == user.getState()) {
+            return true;
+        }
+        user.setState(UserStates.CANCELLED);
+        boolean isSuccess = this.modify(user);
+        logger.info("注销用户 isSuccess:[{}] info:[{}]", isSuccess, JsonUtil.GSON.toJson(user));
+        return isSuccess;
+    }
 
     /**
      * 冻结用户
@@ -213,9 +274,9 @@ public class UserService {
             throw new BusException("用户已注销");
         }
         user.setState(UserStates.FREEZING);
-        User freezeUser = this.modify(user);
-        logger.info("冻结用户 id:[{}] info:[{}]", uid, JsonUtil.GSON.toJson(freezeUser));
-        return true;
+        boolean isSuccess = this.modify(user);
+        logger.info("冻结用户 id:[{}] isSuccess:[{}] info:[{}]", uid, isSuccess, JsonUtil.GSON.toJson(user));
+        return isSuccess;
     }
 
     /**

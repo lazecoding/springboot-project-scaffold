@@ -147,6 +147,58 @@ public class UserController {
         return resultBean;
     }
 
+    @Operation(summary = "激活用户", description = "激活用户")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
+    @Parameter(name = "uid", description = "用户 Id", example = "uid", required = true)
+    @PostMapping(value = "activate")
+    @ResponseBody
+    public ResultBean activate(String uid) {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            isSuccess = userService.activate(uid);
+        } catch (BusException e) {
+            logger.error("激活用户异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("激活用户异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
+    @Operation(summary = "注销用户", description = "注销用户")
+    @ApiResponse(
+            responseCode = "200", description = "成功",
+            content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ResultBean.class))}
+    )
+    @Parameter(name = "uid", description = "用户 Id", example = "uid", required = true)
+    @PostMapping(value = "cancel")
+    @ResponseBody
+    public ResultBean cancel(String uid) {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            isSuccess = userService.cancel(uid);
+        } catch (BusException e) {
+            logger.error("注销用户异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("注销用户异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
 
     @Operation(summary = "用户列表", description = "用户列表")
     @ApiResponse(
