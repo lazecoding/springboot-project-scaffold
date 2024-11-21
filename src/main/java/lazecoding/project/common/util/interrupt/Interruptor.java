@@ -132,6 +132,7 @@ public class Interruptor {
         }
         taskInfo.setProcess(process);
         RedissonOperator.set(getTaskKey(taskId), taskInfo, TASK_TTL);
+        RedissonOperator.mapPut(getHolderKey(), taskId , taskInfo);
         return true;
     }
 
