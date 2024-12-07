@@ -4,10 +4,7 @@ package lazecoding.project.common.util.interrupt;
 import lazecoding.project.common.util.cache.RedissonOperator;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 断续器
@@ -37,12 +34,6 @@ import java.util.Set;
  */
 public class Interruptor {
 
-
-    /**
-     * 单个任务缓存
-     */
-    private static final String TASK_CACHE_HEAD = "keeper_task";
-
     /**
      * 单个任务缓存,ttl 单位 / 秒 （ 10 分钟）
      */
@@ -63,13 +54,6 @@ public class Interruptor {
      * 私有，禁止实例化
      */
     private Interruptor() {
-    }
-
-    /**
-     * 获取 task 缓存 Key
-     */
-    private static String getTaskKey(String taskId) {
-        return TASK_CACHE_HEAD + taskId;
     }
 
     /**
@@ -99,11 +83,17 @@ public class Interruptor {
         if (findTask(taskId) != null) {
             return false;
         }
-        RedissonOperator.set(getTaskKey(taskId), taskInfo, TASK_TTL);
-        RedissonOperator.mapPut(getHolderKey(), taskId , taskInfo);
+        taskInfo.setExpireTime(createExpireTime());
+        RedissonOperator.mapPut(getHolderKey(), taskId, taskInfo);
         return true;
     }
 
+    /**
+     * 生成过期时间
+     */
+    private static long createExpireTime() {
+        return System.currentTimeMillis() + TASK_TTL;
+    }
 
     /**
      * 保持任务
@@ -114,7 +104,13 @@ public class Interruptor {
         if (!StringUtils.hasText(taskId)) {
             return false;
         }
-        return RedissonOperator.expire(getTaskKey(taskId), TASK_TTL);
+        TaskInfo taskInfo = findTask(taskId);
+        if (taskInfo == null) {
+            return false;
+        }
+        taskInfo.setExpireTime(createExpireTime());
+        RedissonOperator.mapPut(getHolderKey(), taskId, taskInfo);
+        return true;
     }
 
     /**
@@ -131,8 +127,8 @@ public class Interruptor {
             return false;
         }
         taskInfo.setProcess(process);
-        RedissonOperator.set(getTaskKey(taskId), taskInfo, TASK_TTL);
-        RedissonOperator.mapPut(getHolderKey(), taskId , taskInfo);
+        taskInfo.setExpireTime(createExpireTime());
+        RedissonOperator.mapPut(getHolderKey(), taskId, taskInfo);
         return true;
     }
 
@@ -146,12 +142,7 @@ public class Interruptor {
         if (!StringUtils.hasText(taskId)) {
             return false;
         }
-        // 取消任务先取消 holder 缓存
-        boolean isSuccess = RedissonOperator.mapRemove(getHolderKey(), taskId);
-        if (isSuccess) {
-            RedissonOperator.delete(getTaskKey(taskId));
-        }
-        return isSuccess;
+        return RedissonOperator.mapRemove(getHolderKey(), taskId);
     }
 
     /**
@@ -163,17 +154,16 @@ public class Interruptor {
         if (!StringUtils.hasText(taskId)) {
             return false;
         }
-        TaskInfo taskInfo = RedissonOperator.get(getTaskKey(taskId));
-        // holder 中存在， task 中不存在才可以重启
-        if (taskInfo != null) {
-            // 如果 task 缓存中存在，说明重启使其处于 进行中 状态目的已经达到
-            return true;
-        }
-        taskInfo = findTask(taskId);
+        TaskInfo taskInfo = findTask(taskId);
         if (taskInfo == null) {
             return false;
         }
-        RedissonOperator.set(getTaskKey(taskId), taskInfo, TASK_TTL);
+        // 存在缓存且过期时间大于当前时间则 进行中
+        if (taskInfo.isRunning()) {
+            return true;
+        }
+        taskInfo.setExpireTime(createExpireTime());
+        RedissonOperator.mapPut(getHolderKey(), taskId, taskInfo);
         return true;
     }
 
@@ -188,18 +178,17 @@ public class Interruptor {
         if (!StringUtils.hasText(taskId)) {
             return false;
         }
-        TaskInfo taskInfo = RedissonOperator.get(getTaskKey(taskId));
-        // holder 中存在， task 中不存在才可以重启
-        if (taskInfo != null) {
-            // 如果 task 缓存中存在，说明重启使其处于 进行中 状态目的已经达到
-            return true;
-        }
-        taskInfo = findTask(taskId);
+        TaskInfo taskInfo = findTask(taskId);
         if (taskInfo == null) {
             return false;
         }
+        // 存在缓存且过期时间大于当前时间则 进行中
+        if (taskInfo.isRunning()) {
+            return true;
+        }
         taskInfo.setProcess(process);
-        RedissonOperator.set(getTaskKey(taskId), taskInfo, TASK_TTL);
+        taskInfo.setExpireTime(createExpireTime());
+        RedissonOperator.mapPut(getHolderKey(), taskId, taskInfo);
         return true;
     }
 
@@ -221,27 +210,12 @@ public class Interruptor {
      * 获取所有任务
      */
     public static List<TaskInfo> findAllTask() {
+        Collection<TaskInfo> values = RedissonOperator.mapValues(getHolderKey());
+        if (CollectionUtils.isEmpty(values)) {
+            return Collections.emptyList();
+        }
         List<TaskInfo> tasks = new ArrayList<>();
-        List<String> errorTaskIds = new ArrayList<>();
-        Set<String> taskIds = RedissonOperator.mapKeys(getHolderKey());
-        if (!CollectionUtils.isEmpty(taskIds)) {
-            for (String taskId : taskIds) {
-                TaskInfo taskInfo = findTask(taskId);
-                // 防止意外出现异常数据，判空
-                if (taskInfo == null) {
-                    // 对于这种情况是 task cache 不存在， holder cache 中也没有有效数据，则需要强制清理
-                    errorTaskIds.add(taskId);
-                } else {
-                    tasks.add(taskInfo);
-                }
-            }
-        }
-        // 强制清退异常任务
-        if (!CollectionUtils.isEmpty(errorTaskIds)) {
-            for (String errorTaskId : errorTaskIds) {
-                cancel(errorTaskId);
-            }
-        }
+        tasks.addAll(values);
         return tasks;
     }
 
@@ -250,28 +224,15 @@ public class Interruptor {
      * 获取中断的任务
      */
     public static List<TaskInfo> findInterruptTasks() {
-        List<TaskInfo> tasks = new ArrayList<>();
-        List<String> errorTaskIds = new ArrayList<>();
-        Set<String> taskIds = RedissonOperator.mapKeys(getHolderKey());
-        if (!CollectionUtils.isEmpty(taskIds)) {
-            for (String taskId : taskIds) {
-                TaskInfo taskInfo = RedissonOperator.get(getTaskKey(taskId));
-                if (taskInfo == null) {
-                    taskInfo = findTask(taskId);
-                    // 防止意外出现异常数据，判空
-                    if (taskInfo == null) {
-                        // 对于这种情况是 task cache 不存在， holder cache 中也没有有效数据，则需要强制清理
-                        errorTaskIds.add(taskId);
-                    } else {
-                        tasks.add(taskInfo);
-                    }
-                }
-            }
+        Collection<TaskInfo> values = RedissonOperator.mapValues(getHolderKey());
+        if (CollectionUtils.isEmpty(values)) {
+            return Collections.emptyList();
         }
-        // 强制清退异常任务
-        if (!CollectionUtils.isEmpty(errorTaskIds)) {
-            for (String errorTaskId : errorTaskIds) {
-                cancel(errorTaskId);
+        List<TaskInfo> tasks = new ArrayList<>();
+        // 过期时间小于等于当前时间则过期
+        for (TaskInfo taskInfo : values) {
+            if (taskInfo.isExpired()) {
+                tasks.add(taskInfo);
             }
         }
         return tasks;

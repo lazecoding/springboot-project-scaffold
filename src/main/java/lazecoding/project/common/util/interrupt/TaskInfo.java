@@ -42,6 +42,11 @@ public class TaskInfo implements Serializable {
      */
     private Object extend;
 
+    /**
+     * 到期时间
+     */
+    private long expireTime;
+
 
     public TaskInfo() {
         this.taskId = UUID.randomUUID().toString();
@@ -113,4 +118,27 @@ public class TaskInfo implements Serializable {
     public void setExtend(Object extend) {
         this.extend = extend;
     }
+
+    public long getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(long expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    /**
+     * 是否过期
+     */
+    public boolean isExpired() {
+        return System.currentTimeMillis() <= expireTime;
+    }
+
+    /**
+     * 是否运行中
+     */
+    public boolean isRunning() {
+        return System.currentTimeMillis() > expireTime;
+    }
+
 }
