@@ -1,7 +1,7 @@
-package lazecoding.project.common.util.script.js.model;
+package lazecoding.project.common.util.script.model;
 
-import lazecoding.project.common.util.script.js.function.FunctionGroups;
-import lazecoding.project.common.util.script.js.function.Functions;
+import lazecoding.project.common.util.script.function.FunctionGroups;
+import lazecoding.project.common.util.script.function.Functions;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

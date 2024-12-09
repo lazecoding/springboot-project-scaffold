@@ -1,10 +1,10 @@
-package lazecoding.project.common.util.script.js;
+package lazecoding.project.common.util.script;
 
 import lazecoding.project.common.util.JsonUtil;
-import lazecoding.project.common.util.script.js.function.Functions;
-import lazecoding.project.common.util.script.js.function.JavaImplFunctions;
-import lazecoding.project.common.util.script.js.function.Languages;
-import lazecoding.project.common.util.script.js.model.FunctionHolder;
+import lazecoding.project.common.util.script.function.Functions;
+import lazecoding.project.common.util.script.function.JavaImplFunctions;
+import lazecoding.project.common.util.script.function.Languages;
+import lazecoding.project.common.util.script.model.FunctionHolder;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.PolyglotException;
 import org.graalvm.polyglot.Source;
