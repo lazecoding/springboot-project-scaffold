@@ -64,18 +64,6 @@ public class JavaImplFunctions {
     }
 
     /**
-     * SM3
-     */
-    public String sm3(Object obj) {
-        if (obj == null) {
-            return "";
-        }
-        // TODO SM3(obj.toString().getBytes(StandardCharsets.UTF_8))
-        return "SM3";
-    }
-
-
-    /**
      * 取交集
      */
     public List<Object> listInter(List<Object> list1, List<Object> list2) {

@@ -4,7 +4,7 @@ package lazecoding.project.common.util.script.function;
  * 定义函数
  * MD5
  *
- * @author liux
+ * @author lazecoding
  */
 public enum Functions {
 
@@ -214,11 +214,6 @@ public enum Functions {
             "获取 MD5 值。\n" +
                     "用法：MD5('111')\n" +
                     "示例：MD5('111') 返回的结果是 '698d51a19d8a121ce581499d7b701668'。"),
-    SM3("SM3", "SM3", FunctionGroups.STRING.getGroup(), Languages.JAVA,
-            "sm3",
-            "获取 SM3 值。\n" +
-                    "用法：SM3('111')\n" +
-                    "示例：SM3('111') 返回的结果是 '6df72957d3b4d3c585b4f3ff3e04565fbe4750915f79954106a2b3789e676fc0'。"),
     // JSON
     GET("GET", "获取某个路径的值", FunctionGroups.JSON.getGroup(), Languages.JS,
             "function GET(jsonPath, jsonObj) {\n" +
