@@ -1,5 +1,8 @@
 package lazecoding.project.common.util.script.function;
 
+import cn.hutool.core.date.DateUtil;
+import lazecoding.project.common.util.time.DateConvertor;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -7,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -124,4 +128,115 @@ public class JavaImplFunctions {
         }
         return Arrays.asList(text.split(separator));
     }
+
+    /**
+     * 日期转指定格式
+     */
+    public String dateToString(Date date, String pattern) {
+        return DateFormatUtils.format(date, pattern);
+    }
+
+    /**
+     * 指定格式转日期
+     */
+    public Date stringToDate(String date, String pattern) {
+        return DateUtil.parse(date, pattern);
+    }
+
+
+    /**
+     * 获取年份
+     */
+    public int year(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.year(date);
+    }
+
+    /**
+     * 获取月份
+     */
+    public int month(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.month(date);
+    }
+
+    /**
+     * 获取年份的第几天
+     */
+    public int dayOfYear(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.dayOfYear(date);
+    }
+
+    /**
+     * 获取月份的第几天
+     */
+    public int dayOfMonth(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.dayOfMonth(date);
+    }
+
+    /**
+     * 获取一周的第几天
+     */
+    public int dayOfWeek(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.dayOfWeek(date);
+    }
+
+
+
+    /**
+     * 获取小时
+     */
+    public int hour(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.hour(date, true);
+    }
+
+    /**
+     * 获取分
+     */
+    public int minute(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.minute(date);
+    }
+
+
+    /**
+     * 获取秒
+     */
+    public int second(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.second(date);
+    }
+
+    /**
+     * 获取毫秒
+     */
+    public int millisecond(Date date) {
+        if (date == null) {
+            date = new Date();
+        }
+        return DateUtil.millisecond(date);
+    }
+
+
+
 }

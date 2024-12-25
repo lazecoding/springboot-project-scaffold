@@ -250,156 +250,39 @@ public enum Functions {
     NOW("NOW", "当前时间戳", FunctionGroups.DATE.getGroup(), Languages.JAVA,
             "currentTimeMillis",
             "获取当前时间戳"),
-    DATE("DATE", "DATE", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function DATE(value) {\n" +
-                    "  if (typeof value === 'string') {\n" +
-                    "    // 处理字符串格式的日期\n" +
-                    "    return new Date(value);\n" +
-                    "  } else if (typeof value === 'number') {\n" +
-                    "    // 处理时间戳（毫秒）\n" +
-                    "    return new Date(value);\n" +
-                    "  } else {\n" +
-                    "    throw new Error('Invalid input type. DATE function accepts either a string or a number.');\n" +
-                    "  }\n" +
-                    "}",
-            "返回当前日期或将文本转换为日期"),
-    DATEFORMAT("DATEFORMAT", "日期格式", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function DATEFORMAT(date, format) {\n" +
-                    "  if (!(date instanceof Date)) {\n" +
-                    "    throw new Error('The first argument must be a Date object.');\n" +
-                    "  }\n" +
-                    "\n" +
-                    "  const year = date.getFullYear();\n" +
-                    "  const month = (date.getMonth() + 1).toString().padStart(2, '0');\n" +
-                    "  const day = date.getDate().toString().padStart(2, '0');\n" +
-                    "  const hour = date.getHours().toString().padStart(2, '0');\n" +
-                    "  const minute = date.getMinutes().toString().padStart(2, '0');\n" +
-                    "  const second = date.getSeconds().toString().padStart(2, '0');\n" +
-                    "\n" +
-                    "  return format\n" +
-                    "    .replace('yyyy', year)\n" +
-                    "    .replace('MM', month)\n" +
-                    "    .replace('dd', day)\n" +
-                    "    .replace('HH', hour)\n" +
-                    "    .replace('mm', minute)\n" +
-                    "    .replace('ss', second);\n" +
-                    "}",
-            "DATEFORMAT(date,format) 将日期格式化为指定类型"),
-    YEAR("YEAR", "获取年份", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function YEAR(date) {\n" +
-                    "  // 如果date是一个日期对象，直接使用它\n" +
-                    "  if (date instanceof Date) {\n" +
-                    "    return date.getFullYear();\n" +
-                    "  }\n" +
-                    "  // 如果date是一个字符串或数字（时间戳），先转换成日期对象\n" +
-                    "  else {\n" +
-                    "    // 创建新的日期对象\n" +
-                    "    const validDate = new Date(date);\n" +
-                    "    // 检查日期是否有效\n" +
-                    "    if (!isNaN(validDate.getTime())) {\n" +
-                    "      return validDate.getFullYear();\n" +
-                    "    } else {\n" +
-                    "      throw new Error('Invalid date');\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "}",
-            "获取时间/时间字符/时间戳年份"),
-    MONTH("MONTH", "获取月份", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function MONTH(date) {\n" +
-                    "  // 如果date是一个日期对象，直接使用它\n" +
-                    "  if (date instanceof Date) {\n" +
-                    "    return validDate.getMonth() + 1;\n" +
-                    "  }\n" +
-                    "  // 如果date是一个字符串或数字（时间戳），先转换成日期对象\n" +
-                    "  else {\n" +
-                    "    // 创建新的日期对象\n" +
-                    "    const validDate = new Date(date);\n" +
-                    "    // 检查日期是否有效\n" +
-                    "    if (!isNaN(validDate.getTime())) {\n" +
-                    "      return validDate.getMonth() + 1;\n" +
-                    "    } else {\n" +
-                    "      throw new Error('Invalid date');\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "}",
-            "获取时间/时间字符/时间戳月份"),
-    DAY("DAY", "获取日期", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function DAY(date) {\n" +
-                    "  // 如果date是一个日期对象，直接使用它\n" +
-                    "  if (date instanceof Date) {\n" +
-                    "    return date.getDate();\n" +
-                    "  }\n" +
-                    "  // 如果date是一个字符串或数字（时间戳），先转换成日期对象\n" +
-                    "  else {\n" +
-                    "    // 创建新的日期对象\n" +
-                    "    const validDate = new Date(date);\n" +
-                    "    // 检查日期是否有效\n" +
-                    "    if (!isNaN(validDate.getTime())) {\n" +
-                    "      return date.getDate();\n" +
-                    "    } else {\n" +
-                    "      throw new Error('Invalid date');\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "}",
-            "获取时间/时间字符/时间戳日期"),
-    HOUR("HOUR", "获取小时", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function HOUR(date) {\n" +
-                    "  // 如果date是一个日期对象，直接使用它\n" +
-                    "  if (date instanceof Date) {\n" +
-                    "    return date.getHours();\n" +
-                    "  }\n" +
-                    "  // 如果date是一个字符串或数字（时间戳），先转换成日期对象\n" +
-                    "  else {\n" +
-                    "    // 创建新的日期对象\n" +
-                    "    const validDate = new Date(date);\n" +
-                    "    // 检查日期是否有效\n" +
-                    "    if (!isNaN(validDate.getTime())) {\n" +
-                    "      return validDate.getHours();\n" +
-                    "    } else {\n" +
-                    "      throw new Error('Invalid date');\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "}",
-            "获取时间/时间字符/时间戳小时"),
-    MINUTE("MINUTE", "获取分钟", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function MINUTE(date) {\n" +
-                    "  // 如果date是一个日期对象，直接使用它\n" +
-                    "  if (date instanceof Date) {\n" +
-                    "    return date.getMinutes();\n" +
-                    "  }\n" +
-                    "  // 如果date是一个字符串或数字（时间戳），先转换成日期对象\n" +
-                    "  else {\n" +
-                    "    // 创建新的日期对象\n" +
-                    "    const validDate = new Date(date);\n" +
-                    "    // 检查日期是否有效\n" +
-                    "    if (!isNaN(validDate.getTime())) {\n" +
-                    "      return validDate.getMinutes();\n" +
-                    "    } else {\n" +
-                    "      throw new Error('Invalid date');\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "}",
-            "获取时间/时间字符/时间戳分钟"),
-    SECOND("SECOND", "获取秒", FunctionGroups.DATE.getGroup(), Languages.JS,
-            "function SECOND(date) {\n" +
-                    "  // 如果date是一个日期对象，直接使用它\n" +
-                    "  if (date instanceof Date) {\n" +
-                    "    return date.getSeconds();\n" +
-                    "  }\n" +
-                    "  // 如果date是一个字符串或数字（时间戳），先转换成日期对象\n" +
-                    "  else {\n" +
-                    "    // 创建新的日期对象\n" +
-                    "    const validDate = new Date(date);\n" +
-                    "    // 检查日期是否有效\n" +
-                    "    if (!isNaN(validDate.getTime())) {\n" +
-                    "      return validDate.getSeconds();\n" +
-                    "    } else {\n" +
-                    "      throw new Error('Invalid date');\n" +
-                    "    }\n" +
-                    "  }\n" +
-                    "}",
-            "获取时间/时间字符/时间戳秒"),
-
+    STRINGTODATE("STRINGTODATE", "指定格式转日期", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "stringToDate",
+            "指定格式转日期"),
+    DATETOSTRING("DATETOSTRING", "日期转指定格式", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "dateToString",
+            "日期转指定格式"),
+    YEAR("YEAR", "获取年份", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "year",
+            "YEAR(date) 获取时间/时间字符/时间戳年份"),
+    MONTH("MONTH", "获取月份", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "month",
+            "MONTH(date) 获取时间/时间字符/时间戳月份"),
+    DAYOFYEAR("DAYOFYEAR", "获取日期(年)", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "dayOfYear",
+            "DAYOFYEAR(date) 获取年份的第几天"),
+    DAYOFMONTH("DAYOFMONTH", "获取日期(月)", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "dayOfMonth",
+            "DAYOFMONTH(date) 获取月份的第几天"),
+    DAYOFWEEK("DAYOFWEEK", "获取日期(周)", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "dayOfWeek",
+            "DAYOFWEEK(date) 获取一周的第几天"),
+    HOUR("HOUR", "获取小时", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "hour",
+            "HOUR(date) 获取时间/时间字符/时间戳小时"),
+    MINUTE("MINUTE", "获取分钟", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "minute",
+            "MINUTE(date) 获取时间/时间字符/时间戳分钟"),
+    SECOND("SECOND", "获取秒", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "second",
+            "SECOND(date) 获取时间/时间字符/时间戳秒"),
+    MILLISECOND("MILLISECOND", "获取毫秒", FunctionGroups.DATE.getGroup(), Languages.JAVA,
+            "millisecond",
+            "MILLISECOND(date) 获取时间/时间字符/时间戳毫秒"),
     // Collection
     IN("IN", "存在", FunctionGroups.COLLECTION.getGroup(), Languages.JS,
             "function IN(ele, collection) {\n" +
