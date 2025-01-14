@@ -44,6 +44,20 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+# 检索
+elastic:
+  search:
+    addresses:
+      # 集群下配置多个
+      - ip: 127.0.0.1
+        port: 9200
+    username:
+    password:
+# 关闭 ES 检测
+management:
+  health:
+    elasticsearch:
+      enabled: false
 # 文件操作类型
 file:
   # local、minio
