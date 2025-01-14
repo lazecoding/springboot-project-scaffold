@@ -30,6 +30,7 @@
         <graalvm.version>22.3.5</graalvm.version>
         <lucene.version>8.4.0</lucene.version>
         <elasticsearch.version>7.6.2</elasticsearch.version>
+        <javax.mail.version>1.6.2</javax.mail.version>
     </properties>
     <dependencies>
         <dependency>
@@ -144,7 +145,7 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
-            <version>1.6.2</version>
+            <version>${javax.mail.version}</version>
         </dependency>
 
         <!-- minio -->
