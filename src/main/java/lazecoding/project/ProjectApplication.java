@@ -33,7 +33,7 @@ public class ProjectApplication {
         try {
             SpringDocConfigProperties springDocConfigProperties = BeanUtil.getBean(SpringDocConfigProperties.class);
             String apiDocsPath = springDocConfigProperties.getApiDocs().getPath();
-            System.out.println("Open API: http://localhost" + port + apiDocsPath);
+            System.out.println("Open API: http://localhost:" + port + apiDocsPath);
         } catch (Exception e) {
             logger.info("springdoc.api-docs.enabled:false");
         }
