@@ -29,12 +29,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         LoginService loginService = BeanUtil.getBean(LoginService.class);
-        CurrentUser currentUser = null;
-        try {
-            currentUser = loginService.currentUser();
-        } catch (Exception e) {
-            logger.error("loginService.currentUser Exception", e);
-        }
+        CurrentUser currentUser = loginService.currentUser();
         if (currentUser == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;

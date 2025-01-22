@@ -180,12 +180,8 @@ public class LoginService {
         if (!StringUtils.hasText(uid)) {
             return null;
         }
-        CurrentUser currentUser = CacheOperator.get(CacheConstants.CURRENT_USER.getCacheKey(accessToken));
-        if (currentUser == null) {
-            throw new BusException("请重新登录");
-        }
         // 如果需要用户 token 实时生效，需要从 User 中读取权限，不建议
-        return currentUser;
+        return CacheOperator.get(CacheConstants.CURRENT_USER.getCacheKey(accessToken));
     }
 
 }
