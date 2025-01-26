@@ -10,6 +10,7 @@ import lazecoding.project.common.model.user.LoginVo;
 import lazecoding.project.common.util.cache.CacheOperator;
 import lazecoding.project.common.util.security.JWTOperator;
 import lazecoding.project.common.util.security.JWTUser;
+import lazecoding.project.common.util.security.exception.NotLoginedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,6 +183,19 @@ public class LoginService {
         }
         // 如果需要用户 token 实时生效，需要从 User 中读取权限，不建议
         return CacheOperator.get(CacheConstants.CURRENT_USER.getCacheKey(accessToken));
+    }
+
+    /**
+     * 获取当前用户，未登录则抛出 NotLoginedException
+     *
+     * @throws NotLoginedException 未登录异常
+     */
+    public CurrentUser currentUserIf() throws NotLoginedException {
+        CurrentUser currentUser = this.currentUser();
+        if (currentUser == null) {
+            throw new NotLoginedException();
+        }
+        return currentUser;
     }
 
 }

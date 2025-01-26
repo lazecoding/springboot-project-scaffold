@@ -12,6 +12,7 @@ import lazecoding.project.common.model.user.LoginParam;
 import lazecoding.project.common.model.user.LoginVo;
 import lazecoding.project.common.mvc.ResultBean;
 import lazecoding.project.common.util.security.JWTOperator;
+import lazecoding.project.common.util.security.exception.NotLoginedException;
 import lazecoding.project.service.user.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +130,7 @@ public class LoginController {
 
 
     /**
-     * 用户登出 http://localhost:9977/sys/logout
+     * 用户登出
      */
     @Operation(summary = "登出", description = "用户登出")
     @PostMapping(value = "logout")
@@ -156,7 +157,7 @@ public class LoginController {
     }
 
     /**
-     * 获取当前用户 http://localhost:9977/sys/current
+     * 获取当前用户
      */
     @Operation(summary = "获取当前用户", description = "获取当前用户")
     @GetMapping(value = "current")
@@ -180,6 +181,35 @@ public class LoginController {
         resultBean.setMessage(message);
         return resultBean;
     }
+
+    /**
+     * 获取当前用户
+     */
+    @Operation(summary = "获取当前用户", description = "获取当前用户")
+    @GetMapping(value = "current-if")
+    @ResponseBody
+    public ResultBean currentIf() {
+        ResultBean resultBean = ResultBean.getInstance();
+        String message = "";
+        boolean isSuccess = false;
+        try {
+            CurrentUser currentUser = loginService.currentUserIf();
+            resultBean.addData("currentUser", currentUser);
+            isSuccess = true;
+        } catch (NotLoginedException e) {
+            throw e;
+        }catch (BusException e) {
+            logger.error("获取当前用户异常", e);
+            message = e.getMessage();
+        } catch (Exception e) {
+            logger.error("获取当前用户异常", e);
+            message = "系统异常";
+        }
+        resultBean.setSuccess(isSuccess);
+        resultBean.setMessage(message);
+        return resultBean;
+    }
+
 
 
 }
